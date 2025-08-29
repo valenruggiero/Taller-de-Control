@@ -1,0 +1,35 @@
+\subsection{Limitaciones de los sensores}
+
+\subsubsection{Limitación de lectura del potenciómetro}
+
+El potenciómetro se comporta como un divisor resistivo variable, por lo que la medición que se realiza con el microcontrolador resulta en una tensión entre $V_{\min} = \qty{0}{\V}$ y $V_{\max} = \qty{5}{\V}$, dependiendo de la posición de la perilla. El microcontrolador realiza la medición utilizando un conversor analógico-digital de $N = 10$ bits de resolución, lo que resulta en 1024 símbolos posibles, equidistantes en tensión. Por lo tanto, la resolución mínima de lectura del potenciómetro estará dada por
+\begin{equation*}
+    \Delta V = \frac{V_{\max} - V_{\min}}{2^N} = \frac{\qty{5}{\V}}{1024} \approx \qty{5}{\mV}.
+\end{equation*}
+
+Si realizamos un mapeo del rango de tensiones a un rango de ángulos entre \qty{-90}{\degree} y \qty{90}{\degree}, entonces la resolución angular será dada por
+\begin{equation*}
+    \Delta \theta = \frac{\theta_{\max} - \theta_{\min}}{2^N} = \frac{\qty{180}{\degree}}{1024} \approx \qty{0.18}{\degree}.
+\end{equation*}
+
+% TODO: Tiempo requerido para una medición
+
+\subsubsection{Limitación de lectura del sensor de distancia}
+
+El sensor de distancia funciona enviando un pulso sonoro cuando se inicia la medición, para luego informar la cantidad de tiempo transcurrido hasta que la señal reflejada en un obstáculo regresa al sensor. A partir de conocer la velocidad del sonido en el aire, puede calcularse la distancia a la que se encuentra el obstáculo. La resolución temporal que provee la biblioteca \verb|NewPing.h| es de \qty{4}{\us} para el tiempo de vuelo total, ya que utiliza un temporizador del microcontrolador con dicha resolución. Dado que la expresión que relaciona el tiempo de vuelo con la distancia es
+\begin{equation}
+    d = \frac{v t}{2},
+\end{equation}
+con $v$ la velocidad del sonido en el aire, entonces la resolución en distancia asociada será
+\begin{equation}
+    \label{eq:dist-tiempo-errores}
+    \Delta d = \frac{v}{2} \Delta t \approx \qty{0.7}{\mm},
+\end{equation}
+usando un valor estándar de $v = \qty{340}{\m\per\s}$.
+
+Sin embargo, los valores de distancia y de tiempo provistos por la biblioteca son artificialmente más precisos que los que se obtiene en la realidad. La hoja de datos del sensor indica que su resolución en distancia es del orden de los \qty{3}{\mm}, una precisión considerablemente peor. Por lo tanto, se toma a este valor como la resolución real del dispositivo. Despejando de \eqref{eq:dist-tiempo-errores}, la mínima resolución temporal real será de aproximadamente \qty{18}{\us}.
+
+% TODO: Tiempo requerido para una medición
+% TODO: Relación de la velocidad del sonido con la temperatura (aparentemente casi no varía con la presión).
+
+% vim: ts=4 sts=4 sw=4 et lbr
