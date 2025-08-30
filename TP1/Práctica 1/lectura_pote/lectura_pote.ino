@@ -7,23 +7,28 @@ void setup()  {
   // Código que no se medirá
 }
 
-void loop1() {
+void loop() {
+  long value = 0;
   unsigned long tiempoInicio = micros();  // Marca de tiempo de inicio
 
-  // inicializo valor
-  int value = analogRead(PIN_POTE);
+  for (int i = 0; i < 100; i++) {
+    // inicializo valor
+    value += analogRead(PIN_POTE);
+  }
 
   unsigned long tiempoFinal = micros();                 // Marca de tiempo de finalización
   unsigned long duracion = tiempoFinal - tiempoInicio;  // Calcula la duración
 
-    Serial.print("El código tardó: ");
-    Serial.print(duracion);
-    Serial.println(" us");
+  Serial.print("El código tardó: ");
+  Serial.print(duracion / 100.0f);
+  Serial.print(" us; ");
+  Serial.print("Valor: ");
+  Serial.println(value / 100.0f);
 }
 
 int last_time = 0;
 
-void loop() {
+void loop1() {
   unsigned long tiempoInicio = micros();  // Marca de tiempo de inicio
 
   // inicializo valor

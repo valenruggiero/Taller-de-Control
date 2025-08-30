@@ -14,7 +14,7 @@ void setup() {
   Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
 }
 
-void loop1() {
+void loop() {
   delay(WAIT_MS);                      // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
   unsigned long tiempoInicio = micros();  // Marca de tiempo de inicio
 
@@ -27,10 +27,11 @@ void loop1() {
     Serial.print(duracion);
     Serial.println(" us");
     Serial.println((float)uS / US_ROUNDTRIP_CM);
+    Serial.println((float)uS);
 }
 
 
-void loop() {
+void loop1() {
   unsigned long tiempoInicio = micros();  // Marca de tiempo de inicio
 
   unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).

@@ -12,14 +12,14 @@ Si realizamos un mapeo del rango de tensiones a un rango de ángulos entre \qty{
     \Delta \theta = \frac{\theta_{\max} - \theta_{\min}}{2^N} = \frac{\qty{180}{\degree}}{1024} \approx \qty{0.18}{\degree}.
 \end{equation*}
 
-% TODO: Tiempo requerido para una medición
+Para calcular el tiempo requerido para realizar una medición, se realizaron 100 mediciones consecutivas del ADC y se promedió el tiempo de cada una. El valor obtenido fue de \qty{112}{\us}.
 
 \subsubsection{Limitación de lectura del sensor de distancia}
 
 El sensor de distancia funciona enviando un pulso sonoro cuando se inicia la medición, para luego informar la cantidad de tiempo transcurrido hasta que la señal reflejada en un obstáculo regresa al sensor. A partir de conocer la velocidad del sonido en el aire, puede calcularse la distancia a la que se encuentra el obstáculo. La resolución temporal que provee la biblioteca \verb|NewPing.h| es de \qty{4}{\us} para el tiempo de vuelo total, ya que utiliza un temporizador del microcontrolador con dicha resolución. Dado que la expresión que relaciona el tiempo de vuelo con la distancia es
-\begin{equation}
+\begin{equation*}
     d = \frac{v t}{2},
-\end{equation}
+\end{equation*}
 con $v$ la velocidad del sonido en el aire, entonces la resolución en distancia asociada será
 \begin{equation}
     \label{eq:dist-tiempo-errores}
@@ -29,7 +29,8 @@ usando un valor estándar de $v = \qty{340}{\m\per\s}$.
 
 Sin embargo, los valores de distancia y de tiempo provistos por la biblioteca son artificialmente más precisos que los que se obtiene en la realidad. La hoja de datos del sensor indica que su resolución en distancia es del orden de los \qty{3}{\mm}, una precisión considerablemente peor. Por lo tanto, se toma a este valor como la resolución real del dispositivo. Despejando de \eqref{eq:dist-tiempo-errores}, la mínima resolución temporal real será de aproximadamente \qty{18}{\us}.
 
-% TODO: Tiempo requerido para una medición
+El tiempo que se demora en realizar una medición depende de la distancia al objeto. Se realizaron mediciones experimentales del tiempo de medición, variando la distancia de medición para obtener un rango. En la biblioteca se estableció una distancia máxima de \qty{50}{\cm}, para limitar el tiempo de espera en caso de que el obstáculo se encuentre demasiado lejos. Este valor es más que suficiente para controlar el \emph{ball and beam}, ya que la varilla tiene una longitud considerablemente menor a \qty{50}{\cm}. Las mediciones realizadas sitúan al tiempo de medición entre los \qty{2.4}{\ms} para obstáculos extremadamente cercanos al sensor, y los \qty{5.2}{\ms} para obstáculos muy lejanos donde entra en juego la limitación de los \qty{50}{\cm}. Se considerará entonces que el sensor demora \qty{5.2}{\ms} en realizar una medición, adoptando el peor caso.
+
 % TODO: Relación de la velocidad del sonido con la temperatura (aparentemente casi no varía con la presión).
 
 % vim: ts=4 sts=4 sw=4 et lbr
