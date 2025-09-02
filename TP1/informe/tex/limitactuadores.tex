@@ -1,3 +1,9 @@
 \subsection{Limitaciones de los actuadores}
 
+\subsubsection{Limitaciones del servomotor}
 
+El servomotor recibe una señal tipo PWM, cuyo ancho de pulso determina el ángulo al cual se moverá. Según su hoja de datos, un ancho de pulso de \qty{1}{\ms} se corresponderá con un ángulo de \qty{-90}{\degree}, mientras que un ancho de pulso de \qty{2}{\ms} se corresponde con un ángulo de \qty{90}{\degree}. Sin embargo, se realizaron experimentos con el servo y se encontró que el rango de tiempos que obtiene la excursión angular completa es de \qtyrange{600}{2400}{\us}.
+
+
+
+% vim: ts=4 sts=4 sw=4 et
