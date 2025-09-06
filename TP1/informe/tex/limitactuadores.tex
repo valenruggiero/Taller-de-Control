@@ -2,8 +2,19 @@
 
 \subsubsection{Limitaciones del servomotor}
 
-El servomotor recibe una señal tipo PWM, cuyo ancho de pulso determina el ángulo al cual se moverá. Según su hoja de datos, un ancho de pulso de \qty{1}{\ms} se corresponderá con un ángulo de \qty{-90}{\degree}, mientras que un ancho de pulso de \qty{2}{\ms} se corresponde con un ángulo de \qty{90}{\degree}. Sin embargo, se realizaron experimentos con el servo y se encontró que el rango de tiempos que obtiene la excursión angular completa es de \qtyrange{600}{2400}{\us}.
+El servomotor recibe una señal tipo PWM, cuyo ancho de pulso determina el ángulo al cual se moverá. Según su hoja de datos, un ancho de pulso de \qty{1}{\ms} se corresponderá con un ángulo de \qty{-90}{\degree}, mientras que un ancho de pulso de \qty{2}{\ms} se corresponde con un ángulo de \qty{90}{\degree}. Por otro lado, se especifica que la mínima resolución temporal que presenta el servo es de \qty{5}{\us}, lo que resulta en
+$$\frac{\qty{2}{\ms} - \qty{1}{\ms}}{\qty{5}{\us}} = 200$$
+incrementos. Dado que la amplitud total es de \qty{180}{\degree}, resulta que la resolución angular del servomotor es de \qty{0.9}{\degree}.
 
+Se realizaron experimentos con el servo y se encontró que el rango de tiempos que obtiene la excursión angular completa es de \qtyrange{600}{2400}{\us}. Sin embargo, consideramos como peor caso que sigue habiendo 200 incrementos angulares, en lugar de recalcular la resolución contemplando los \qty{5}{\us} especificados.
 
+Además, contemplando que la biblioteca \verb|Servo.h| utilizada para comandar al motor emplea un temporizador de \qty{16}{\bit} para generar la señal PWM, la cantidad de divisiones de un período de la señal será de $2^{16} = 65536$. Como la frecuencia es de \qty{50}{\Hz}, su período es de \qty{20}{\ms}. Entonces, la resolución temporal que se obtiene con el temporizador es de
+$$\frac{\qty{20}{\ms}}{2^{16}} = \qty{305}{\ns}.$$
+Como este valor es menor a la resolución temporal del servo, consideramos que la limitación está dada por el servomotor y la resolución angular es la calculada anteriormente, de \qty{0.9}{\deg}.
 
-% vim: ts=4 sts=4 sw=4 et
+% TODO: Medir con acelerómetro?
+% TODO: Calcular/medir resolución angular trasladada a la barra del BaB
+% TODO: Estimar tiempo requerido para mover el servo 30 grados
+% TODO: Recalcular todo para frecuencia de 1 Hz
+
+% vim: ts=4 sts=4 sw=4 et lbr
