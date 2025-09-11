@@ -15,4 +15,4 @@ document.pdf
 *.fls
 
 raw-imgs/
-informe/document.synctex.gz
+**/document.synctex.gz
