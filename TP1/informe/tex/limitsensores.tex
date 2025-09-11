@@ -2,7 +2,7 @@
 
 \subsubsection{Limitación de lectura del potenciómetro}
 
-El potenciómetro se comporta como un divisor resistivo variable, por lo que la medición que se realiza con el microcontrolador resulta en una tensión entre $V_{\min} = \qty{0}{\V}$ y $V_{\max} = \qty{5}{\V}$, dependiendo de la posición de la perilla. El microcontrolador realiza la medición utilizando un conversor analógico-digital de $N = 10$ bits de resolución, lo que resulta en 1024 símbolos posibles, equidistantes en tensión. Por lo tanto, la resolución mínima de lectura del potenciómetro estará dada por
+El potenciómetro se comporta como un divisor resistivo variable, por lo que la medición que se realiza con el microcontrolador resulta en una tensión entre $V_{\min} = \qty{0}{\V}$ y $V_{\max} = \qty{5}{\V}$, dependiendo de la posición de la perilla. El microcontrolador, un Arduino UNO, realiza la medición utilizando un conversor analógico-digital de $N = 10$ bits de resolución, lo que resulta en 1024 símbolos posibles, equidistantes en tensión. Por lo tanto, la resolución mínima de lectura del potenciómetro estará dada por
 \begin{equation*}
     \Delta V = \frac{V_{\max} - V_{\min}}{2^N} = \frac{\qty{5}{\V}}{1024} \approx \qty{5}{\mV}.
 \end{equation*}
@@ -14,22 +14,26 @@ Si realizamos un mapeo del rango de tensiones a un rango de ángulos entre \qty{
 
 Para calcular el tiempo requerido para realizar una medición, se realizaron 100 mediciones consecutivas del ADC y se promedió el tiempo de cada una. El valor obtenido fue de \qty{112}{\us}.
 
+Entonces, con la estrategia del potenciómetro y el conversor analógico-digital del microcontrolador se pueden establecer ángulos de referencia con una resolución angular de \qty{0.18}{\degree}, y el tiempo para realizar una medición es de \qty{112}{\us}. Esto es más que apropiado para el diseño de un lazo de control del \emph{ball-and-beam}.
+
 \subsubsection{Limitación de lectura del sensor de distancia}
 
 El sensor de distancia funciona enviando un pulso sonoro cuando se inicia la medición, para luego informar la cantidad de tiempo transcurrido hasta que la señal reflejada en un obstáculo regresa al sensor. A partir de conocer la velocidad del sonido en el aire, puede calcularse la distancia a la que se encuentra el obstáculo. La resolución temporal que provee la biblioteca \verb|NewPing.h| es de $\Delta t = \qty{4}{\us}$ para el tiempo de vuelo total, ya que utiliza un temporizador del microcontrolador con dicha resolución. Dado que la expresión que relaciona el tiempo de vuelo con la distancia es
 \begin{equation*}
     d = \frac{v t}{2},
 \end{equation*}
-con $v$ la velocidad del sonido en el aire, entonces la resolución en distancia asociada será
+con $v$ la velocidad del sonido en el aire, entonces la resolución en distancia asociada será, teóricamente,
 \begin{equation}
     \label{eq:dist-tiempo-errores}
     \Delta d = \frac{v}{2} \Delta t \approx \qty{0.7}{\mm},
 \end{equation}
 usando un valor estándar de $v = \qty{340}{\m\per\s}$.
 
-Sin embargo, los valores de distancia y de tiempo provistos por la biblioteca son artificialmente más precisos que los que se obtiene en la realidad. La hoja de datos del sensor indica que su resolución en distancia es del orden de los \qty{3}{\mm}, una precisión considerablemente peor. Por lo tanto, se toma a este valor como la resolución real del dispositivo. Despejando de \eqref{eq:dist-tiempo-errores}, la mínima resolución temporal real será de aproximadamente \qty{18}{\us}.
+Sin embargo, los valores de distancia y de tiempo provistos por la biblioteca son artificialmente más precisos que los que se obtiene en la realidad. La hoja de datos del sensor indica que su resolución en distancia es del orden de los \qty{3}{\mm}, una precisión considerablemente peor. Por lo tanto, se toma a este valor como la resolución real del dispositivo, la cual se considerará para el control del \emph{ball-and-beam}. Despejando de \eqref{eq:dist-tiempo-errores}, la mínima resolución temporal real será de aproximadamente \qty{18}{\us}.
 
-El tiempo que se demora en realizar una medición depende de la distancia al objeto. Se realizaron mediciones experimentales del tiempo de medición, variando la distancia de medición para obtener un rango. En la biblioteca se estableció una distancia máxima de \qty{50}{\cm}, para limitar el tiempo de espera en caso de que el obstáculo se encuentre demasiado lejos. Este valor es más que suficiente para controlar el \emph{ball and beam}, ya que la varilla tiene una longitud considerablemente menor a \qty{50}{\cm}. Las mediciones realizadas sitúan al tiempo de medición entre los \qty{2.4}{\ms} para obstáculos extremadamente cercanos al sensor, y los \qty{5.2}{\ms} para obstáculos muy lejanos donde entra en juego la limitación de los \qty{50}{\cm}. Se considerará entonces que el sensor demora \qty{5.2}{\ms} en realizar una medición, adoptando el peor caso.
+El tiempo que se demora en realizar una medición depende de la distancia al objeto. Se realizaron mediciones experimentales del tiempo de medición, variando la distancia de medición para obtener un rango. En la biblioteca se estableció una distancia máxima de \qty{50}{\cm}, para limitar el tiempo de espera en caso de que el obstáculo se encuentre demasiado lejos. Este valor es más que suficiente para controlar el \emph{ball-and-beam}, ya que la varilla tiene una longitud menor a \qty{50}{\cm}. Las mediciones realizadas sitúan al tiempo de medición entre los \qty{2.4}{\ms} para obstáculos extremadamente cercanos al sensor, y los \qty{5.2}{\ms} para obstáculos muy lejanos donde entra en juego la limitación de los \qty{50}{\cm}. Se considerará entonces que el sensor demora \qty{5.2}{\ms} en realizar una medición, adoptando el peor caso.
+
+En resumen, con el sensor de distancia se podrá medir la posición del carro con una resolución de \qty{3}{\mm}, más que suficiente para el diseño del lazo de control sobre una barra de longitud \qty{30}{\cm}. El tiempo para tomar una medición es considerable pudiendo llegar a los \qty{5.2}{\ms}, pero aún permite margen para realizar un control a \qty{50}{\Hz}, que permite hasta \qty{20}{\ms} para cómputo por cada iteración.
 
 % TODO: Relación de la velocidad del sonido con la temperatura (aparentemente casi no varía con la presión).
 
