@@ -15,8 +15,8 @@
 #define CONTROL_PERIOD_US  20000 // 20 ms (50 Hz)
 #define DT                 (CONTROL_PERIOD_US / 1e6)
 
-#define BEAM_MID_M 15 // Mitad de la longitud de la barra en metros (MEDIR)
-#define CART_MID_M 5  // Mitad de la longitud del carro (MEDIR)
+#define BEAM_MID_M 0.15 // Mitad de la longitud de la barra en metros (MEDIR)
+#define CART_MID_M 0.05  // Mitad de la longitud del carro (MEDIR)
 
 #define CALIB_ITERS 25 // Medio segundo de calibración
 
