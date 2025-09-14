@@ -10,10 +10,33 @@ Se realizaron experimentos con el servo y se encontró que el rango de tiempos q
 
 Además, contemplando que la biblioteca \verb|Servo.h| utilizada para comandar al motor emplea un temporizador de \qty{16}{\bit} para generar la señal PWM, la cantidad de divisiones de un período de la señal será de $2^{16} = 65536$. Como la frecuencia es de \qty{50}{\Hz}, su período es de \qty{20}{\ms}. Entonces, la resolución temporal que se obtiene con el temporizador es de
 $$\frac{\qty{20}{\ms}}{2^{16}} = \qty{305}{\ns}.$$
-Como este valor es menor a la resolución temporal del servo, consideramos que la limitación está dada por el servomotor y la resolución angular es la calculada anteriormente, de \qty{0.9}{\deg}.
+Como este valor es menor a la resolución temporal del servo, consideramos que la limitación está dada por el servomotor y la resolución angular es la calculada anteriormente,
+$$\Delta\theta = \qty{0.9}{\degree}.$$
+
+Dado que el servomotor se utilizará para mover la barra, es necesario conocer cómo el giro del servo afecta al ángulo de la barra. La Figura~\ref{fig:angulo-barra} muestra un modelo simplificado del sistema servo-barra. Si suponemos que la barra vertical del brazo solo presenta rotaciones muy pequeñas respecto de la vertical, entonces podemos aproximar $x \approx x'$, de donde se obtiene la siguiente relación:
+\begin{align*}
+    L \sin(\alpha) = l \sin(\theta),
+\end{align*}
+y por lo tanto tendremos que
+\begin{align*}
+    \alpha = \sin^{-1}\left(\frac{l}{L} \sin(\theta)\right).
+\end{align*}
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=\linewidth]{barra-angulo}
+    \caption{Modelo simplificado del sistema servo-barra.}
+    \label{fig:angulo-barra}
+\end{figure}
+
+% TODO: longitudes
+Las longitudes involucradas toman los siguientes valores: $L = \qty{0}{\cm}$ y $l = \qty{0}{\cm}$. Para calcular la mínima resolución angular que se puede comandar a la barra, utilizamos la aproximación de ángulos pequeños, resultando en
+\begin{align*}
+    \Delta\alpha \approx \frac{l}{L} \Delta \theta = \qty{0.4}{\degree}.
+\end{align*}
+Por ende, se consigue en el comando de la barra una resolución mejor que la que intrínsecamente posee el servomotor.
 
 % TODO: Medir con acelerómetro?
-% TODO: Calcular/medir resolución angular trasladada a la barra del BaB
 % TODO: Estimar tiempo requerido para mover el servo 30 grados
 % TODO: Recalcular todo para frecuencia de 1 Hz
 
