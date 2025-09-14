@@ -62,6 +62,10 @@ void setup() {
 
   delay(100);
 
+  moveServo(0);
+
+  delay(2000);
+
 #if CALIBRATE
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
