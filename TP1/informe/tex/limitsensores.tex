@@ -52,9 +52,15 @@ $$\theta \approx \frac{a_y}{g},$$
 por lo que la resolución teórica estará dada por
 $$\Delta \theta = \frac{\Delta a}{g} = \qty{244e-6}{\radian} = \qty{0.014}{\degree}.$$
 
-Sin embargo, como se mencionó, las mediciones provenientes del acelerómetro son altamente ruidosas.
-% TODO: medir el ruido del acelerómetro para obtener una mejor idea de la resolución real esperable.
+Sin embargo, como se mencionó, las mediciones provenientes del acelerómetro son altamente ruidosas. Se midió experimentalmente el ángulo obtenido desde el acelerómetro para un ángulo estático de \qty{0}{\degree}. Se observa en la Figura~\ref{fig:ruido-acel} que la señal tiene un ruido de amplitud aproximada de \qty{0.3}{\degree}. Por lo tanto, será difícil distinguir ángulos menores a los \qty{0.3}{\deg}, y no se podrá aprovechar toda la resolución antes calculada de \qty{0.014}{\degree}. Por lo tanto, se considera que la mínima resolución obtenible para la medición de ángulos utilizando solo el acelerómetro será de \qty{0.3}{\degree}. Sin embargo, este valor es más que apropiado para el control que se desea realizar, más aún si se realiza un filtrado complementario que capture la dinámica con mejor resolución y elimine el ruido de alta frecuencia obtenido.
 
-% TODO: medir el tiempo para obtener una lectura
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{resol_acelerometro}
+    \caption{Ángulo estimado en condiciones estáticas utilizando solo el acelerómetro.}
+    \label{fig:ruido-acel}
+\end{figure}
+
+Para obtener el tiempo necesario para realizar una lectura de la IMU, se leyó el sensor 100 veces en forma consecutiva y se promedió el tiempo de todas ellas. Se obtuvo un tiempo promedio de \qty{3.06}{\ms} para una lectura.
 
 % vim: ts=4 sts=4 sw=4 et lbr
