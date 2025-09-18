@@ -54,7 +54,7 @@ $$\Delta \theta = \frac{\Delta a}{g} = \qty{244e-6}{\radian} = \qty{0.014}{\degr
 
 Sin embargo, como se mencionó, las mediciones provenientes del acelerómetro son altamente ruidosas. Se midió experimentalmente el ángulo obtenido desde el acelerómetro para un ángulo estático de \qty{0}{\degree}. Se observa en la Figura~\ref{fig:ruido-acel} que la señal tiene un ruido de amplitud aproximada de \qty{0.3}{\degree}. Por lo tanto, será difícil distinguir ángulos menores a los \qty{0.3}{\deg}, y no se podrá aprovechar toda la resolución antes calculada de \qty{0.014}{\degree}. Por lo tanto, se considera que la mínima resolución obtenible para la medición de ángulos utilizando solo el acelerómetro será de \qty{0.3}{\degree}. Sin embargo, este valor es más que apropiado para el control que se desea realizar, más aún si se realiza un filtrado complementario que capture la dinámica con mejor resolución y elimine el ruido de alta frecuencia obtenido.
 
-\begin{figure}
+\begin{figure}[!tbp]
     \centering
     \includegraphics[width=0.8\linewidth]{resol_acelerometro}
     \caption{Ángulo estimado en condiciones estáticas utilizando solo el acelerómetro.}

@@ -29,13 +29,34 @@ y por lo tanto tendremos que
     \label{fig:angulo-barra}
 \end{figure}
 
-Las longitudes involucradas toman los siguientes valores: $L = \qty{10.5}{\cm}$ y $l = \qty{4.7}{\cm}$. Para calcular la mínima resolución angular que se puede comandar a la barra, utilizamos la aproximación de ángulos pequeños, resultando en
+Las longitudes involucradas toman los siguientes valores: $L = \qty{10.5}{\cm}$ y $l = \qty{4.5}{\cm}$. La relación resultante es de $\alpha = 0.429$. Para calcular la mínima resolución angular que se puede comandar a la barra, utilizamos la aproximación de ángulos pequeños, resultando en
 \begin{align*}
     \Delta\alpha \approx \frac{l}{L} \Delta \theta = \qty{0.4}{\degree}.
 \end{align*}
 Por ende, se consigue en el comando de la barra una resolución mejor que la que intrínsecamente posee el servomotor.
 
-% TODO: Medir con acelerómetro?
+Para corroborar experimentalmente el cálculo anterior, se comandaron diferentes ángulos al servomotor y se midió utilizando el acelerómetro el çangulo resultante en la barra. El Cuadro~\ref{tab:angulos} muestra lo ángulos comandados al servomotor, el ángulo medido en la barra, y el cociente de los primeros sobre los últimos, que se corresponden con el valor de $\alpha$. Vemos que hay cierta dispersión en los valores medidos, pero en promedio se obtiene un $\alpha = 0.390$ experimental, lo que representa una diferencia del \qty{9.1}{\percent} respecto del valor teórico. Se considera el error aceptable, y se tomará la relación medida ($\alpha = 0.39$) para el desarrollo de los siguientes trabajos.
+
+% Promedio 0.390
+
+\begin{table}[!tbp]
+    \centering
+    \begin{tabular}{SSS}
+        \toprule
+        {Ángulo del servo [\unit{\degree}]} & {Ángulo de la barra [\unit{\degree}]} & {$\alpha$} \\
+        \midrule
+        -30.0 & -11.6 & 0.387 \\
+         30.0 &  11.4 & 0.380 \\
+        -20.0 & -8.0  & 0.400 \\
+         20.0 &  7.7  & 0.385 \\
+        -10.0 & -4.1  & 0.410 \\
+         10.0 &  3.8  & 0.380 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Ángulos comandados al servo y resultantes en la barra.}
+    \label{tab:angulos}
+\end{table}
+
 % TODO: Estimar tiempo requerido para mover el servo 30 grados
 % TODO: Recalcular todo para frecuencia de 1 Hz
 
