@@ -2,6 +2,14 @@
 
 \subsubsection{Limitaciones en el envío de datos}
 
-% Envío de datos tardó: 34336 us para los 100 floats (344 us por float).
+Para poder extraer y analizar datos medidos por el controlador, se realiza el envío a través del puerto serie del Arduino Uno. Se utiliza como tasa de transmisión de datos \qty{115200}{\bit\per\s}. Los datos se envían como valores flotantes de \qty{4}{\byte} cada uno, comenzando con un \emph{header} también de \qty{4}{\byte} de longitud. El largo del paquete es configurable dependiendo de las necesidades, pero para considerar el peor caso ---mayor \emph{overhead} por el \emph{header}---, se enviará de a un \emph{float} por vez.
 
-% TODO: completar
+El tiempo de envío de un flotante puede calcularse manualmente. Dado que se utiliza el protocolo UART, el cual envía un byte de información seguido de un bit de frenado, cada byte por enviar consistirá de 9 bits. Cada float contiene 4 bytes, que sumados a los 4 bytes del header dan un total de 8 bytes enviados por float, o equivalentemente, 72 bits. Por lo tanto, se tiene que para enviar un float se tarda
+$$t_s = \frac{\qty{72}{\bit}}{\qty{115200}{\bit\per\s}} = \qty{625}{\us}.$$
+De enviarse más datos por paquete, la eficiencia aumentaría reduciendo el tiempo de envío por flotante hasta un mínimo teórico de \qty{312.5}{\us} (36 bits por número).
+
+También se realizó una medición experimental, donde se enviaron 100 flotantes y se midió el tiempo total de envío. El tiempo total resultó en \qty{62.5}{\ms}, lo que se corresponde con un promedio de \qty{625}{\us} por flotante, igual al calculado teóricamente.
+
+Se concluye que el envío de datos no representa una limitante para el control, incluso en el peor caso de un flotante por paquete donde la eficiencia es baja. Mientras la cantidad de datos enviada por iteración del algoritmo de control sea limitada, el tiempo para enviarlos es manejable. Se espera que los datos enviados por iteración sean del orden de 6 flotantes, empaquetados bajo un único \emph{header}, resultando en un tiempo menor a los \qty{3.8}{\ms} del peor caso.
+
+% Envío de datos tardó: 34336 us para los 100 floats (344 us por float). Esto enviando 100 floats con un solo header que no es lo típico.
