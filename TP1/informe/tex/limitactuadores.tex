@@ -58,6 +58,9 @@ Para corroborar experimentalmente el cálculo anterior, se comandaron diferentes
 \end{table}
 
 % TODO: Estimar tiempo requerido para mover el servo 30 grados
-% TODO: Recalcular todo para frecuencia de 1 Hz
+
+Todo lo mostrado hasta aquí se realizó utilizando una frecuencia de control de \qty{50}{\Hz}. Si en cambio dicha frecuencia de envío de comandos se redujera a \qty{1}{\Hz}, el tiempo que tarda el servo en moverse a una nueva posición se verá severamente afectada.
+
+Con el control rápido original, la limitación para el movimiento venía dada principalmente por la velocidad del servomotor. Había primero un delay de hasta \qty{22}{\ms} en el peor caso entre que se envía un comando y el servo recibe la referencia (dado por la espera de un ciclo completo a \qty{50}{\Hz}, más los apriximadamente \qty{2}{\ms} máximos del ancho de un pulso), más el tiempo que tarda en moverse el servo a la nueva referencia. Si ahora la frecuencia se reduce a solo \qty{1}{\Hz}, el delay inicial puede crecer hasta \qty{1}{\s}. Este retraso se vuelve el principal, haciendo que el tiempo entre el envío de un comando y la llegada del motor a su posición final sea ahora un órden de magnitud mayor.
 
 % vim: ts=4 sts=4 sw=4 et lbr
