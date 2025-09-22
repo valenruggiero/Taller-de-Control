@@ -1,6 +1,6 @@
-\subsection{Limitaciones de los sensores}
+\section{Limitaciones de los sensores}
 
-\subsubsection{Limitación de lectura del potenciómetro}
+\subsection{Limitación de lectura del potenciómetro}
 
 El potenciómetro se comporta como un divisor resistivo variable, por lo que la medición que se realiza con el microcontrolador resulta en una tensión entre $V_{\min} = \qty{0}{\V}$ y $V_{\max} = \qty{5}{\V}$, dependiendo de la posición de la perilla. El microcontrolador, un Arduino UNO, realiza la medición utilizando un conversor analógico-digital de $N = 10$ bits de resolución, lo que resulta en 1024 símbolos posibles, equidistantes en tensión. Por lo tanto, la resolución mínima de lectura del potenciómetro estará dada por
 \begin{equation*}
@@ -16,7 +16,7 @@ Para calcular el tiempo requerido para realizar una medición, se realizaron 100
 
 Entonces, con la estrategia del potenciómetro y el conversor analógico-digital del microcontrolador se pueden establecer ángulos de referencia con una resolución angular de \qty{0.18}{\degree}, y el tiempo para realizar una medición es de \qty{112}{\us}. Esto es más que apropiado para el diseño de un lazo de control del \emph{ball-and-beam}.
 
-\subsubsection{Limitación de lectura del sensor de distancia}
+\subsection{Limitación de lectura del sensor de distancia}
 
 El sensor de distancia funciona enviando un pulso sonoro cuando se inicia la medición, para luego informar la cantidad de tiempo transcurrido hasta que la señal reflejada en un obstáculo regresa al sensor. A partir de conocer la velocidad del sonido en el aire, puede calcularse la distancia a la que se encuentra el obstáculo. La resolución temporal que provee la biblioteca \verb|NewPing.h| es de $\Delta t = \qty{4}{\us}$ para el tiempo de vuelo total, ya que utiliza un temporizador del microcontrolador con dicha resolución. Dado que la expresión que relaciona el tiempo de vuelo con la distancia es
 \begin{equation*}
@@ -37,7 +37,7 @@ En resumen, con el sensor de distancia se podrá medir la posición del carro co
 
 % TODO: Relación de la velocidad del sonido con la temperatura (aparentemente casi no varía con la presión).
 
-\subsubsection{Limitación de lectura de la unidad de medición inercial}
+\subsection{Limitación de lectura de la unidad de medición inercial}
 
 Para la estimación del ángulo de la barra se utiliza una unidad de medición inercial (IMU) modelo MPU6050. La misma cuenta con un acelerómetro de 3 ejes que mide la aceleración lineal en cada uno de los ejes cartesianos, y un giróscopo que mide la velocidad angular alrededor de cada uno de dichos ejes. El acelerómetro provee una medición insesgada del ángulo pero muy ruidosa, mientras que el giróscopo permite medir la dinámica angular de alta frecuencia con muy bajo ruido pero a costa de una deriva temporal (\emph{drift}). Por lo tanto, la estimación se realiza a partir de ambos sensores, combinados utilizando un filtro complementario, que esencialmente consta de un pasa bajos aplicado al acelerómetro ---eliminando el ruido de alta frecuencia---, y un pasa altos aplicado al giróscopo ---eliminando la deriva---.
 

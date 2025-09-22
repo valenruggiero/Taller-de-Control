@@ -1,6 +1,6 @@
-\subsection{Limitaciones de tareas adicionales}
+\section{Limitaciones de tareas adicionales}
 
-\subsubsection{Limitaciones en el envío de datos}
+\subsection{Limitaciones en el envío de datos}
 
 Para poder extraer y analizar datos medidos por el controlador, se realiza el envío a través del puerto serie del Arduino Uno. Se utiliza como tasa de transmisión de datos \qty{115200}{\bit\per\s}. Los datos se envían como valores flotantes de \qty{4}{\byte} cada uno, comenzando con un \emph{header} también de \qty{4}{\byte} de longitud. El largo del paquete es configurable dependiendo de las necesidades, pero para considerar el peor caso ---mayor \emph{overhead} por el \emph{header}---, se enviará de a un \emph{float} por vez.
 

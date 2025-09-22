@@ -1,6 +1,6 @@
-\subsection{Limitaciones de los actuadores}
+\section{Limitaciones de los actuadores}
 
-\subsubsection{Limitaciones del servomotor}
+\subsection{Limitaciones del servomotor}
 
 El servomotor recibe una señal tipo PWM, cuyo ancho de pulso determina el ángulo al cual se moverá. Según su hoja de datos, un ancho de pulso de \qty{1}{\ms} se corresponderá con un ángulo de \qty{-90}{\degree}, mientras que un ancho de pulso de \qty{2}{\ms} se corresponde con un ángulo de \qty{90}{\degree}. Por otro lado, se especifica que la mínima resolución temporal que presenta el servo es de \qty{5}{\us}, lo que resulta en
 $$\frac{\qty{2}{\ms} - \qty{1}{\ms}}{\qty{5}{\us}} = 200$$
@@ -13,10 +13,8 @@ $$\frac{\qty{20}{\ms}}{2^{16}} = \qty{305}{\ns}.$$
 Como este valor es menor a la resolución temporal del servo, consideramos que la limitación está dada por el servomotor y la resolución angular es la calculada anteriormente,
 $$\Delta\theta = \qty{0.9}{\degree}.$$
 
-Dado que el servomotor se utilizará para mover la barra, es necesario conocer cómo el giro del servo afecta al ángulo de la barra. La Figura~\ref{fig:angulo-barra} muestra un modelo simplificado del sistema servo-barra. Si suponemos que la barra vertical del brazo solo presenta rotaciones muy pequeñas respecto de la vertical, entonces podemos aproximar $x \approx x'$, de donde se obtiene la siguiente relación:
-\begin{align*}
-    L \sin(\alpha) = l \sin(\theta),
-\end{align*}
+Dado que el servomotor se utilizará para mover la barra, es necesario conocer cómo el giro del servo afecta al ángulo de la barra. La Figura~\ref{fig:angulo-barra} muestra un modelo simplificado del sistema servo-barra. Si suponemos que la barra vertical del brazo solo presenta rotaciones muy pequeñas respecto de la vertical, entonces podemos aproximar $x \approx x'$, de donde se obtiene la relación
+$L \sin(\alpha) = l \sin(\theta)$,
 y por lo tanto tendremos que
 \begin{align*}
     \alpha = \sin^{-1}\left(\frac{l}{L} \sin(\theta)\right).
@@ -24,7 +22,7 @@ y por lo tanto tendremos que
 
 \begin{figure}[!tbp]
     \centering
-    \includegraphics[width=\linewidth]{barra-angulo}
+    \includegraphics[width=0.8\linewidth]{barra-angulo}
     \caption{Modelo simplificado del sistema servo-barra.}
     \label{fig:angulo-barra}
 \end{figure}
@@ -57,7 +55,7 @@ Para corroborar experimentalmente el cálculo anterior, se comandaron diferentes
     \label{tab:angulos}
 \end{table}
 
-% TODO: Estimar tiempo requerido para mover el servo 30 grados
+Para tener una idea de la velocidad de actuación del servomotor, se realizaron mediciones para obtener cuánto tiempo tarda el servo en moverse un diferenial de \qty{30}{\degree}. Se realizaron diversos experimentos utilizando la IMU para la medición de los ángulos, obteniéndose un valor de aproximadamente \qty{100}{\ms} para dicho movimiento.
 
 Todo lo mostrado hasta aquí se realizó utilizando una frecuencia de control de \qty{50}{\Hz}. Si en cambio dicha frecuencia de envío de comandos se redujera a \qty{1}{\Hz}, el tiempo que tarda el servo en moverse a una nueva posición se verá severamente afectada.
 
