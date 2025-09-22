@@ -13,8 +13,8 @@ $$\frac{\qty{20}{\ms}}{2^{16}} = \qty{305}{\ns}.$$
 Como este valor es menor a la resolución temporal del servo, consideramos que la limitación está dada por el servomotor y la resolución angular es la calculada anteriormente,
 $$\Delta\theta = \qty{0.9}{\degree}.$$
 
-Dado que el servomotor se utilizará para mover la barra, es necesario conocer cómo el giro del servo afecta al ángulo de la barra. La Figura~\ref{fig:angulo-barra} muestra un modelo simplificado del sistema servo-barra. Si suponemos que la barra vertical del brazo solo presenta rotaciones muy pequeñas respecto de la vertical, entonces podemos aproximar $x \approx x'$, de donde se obtiene la relación
-$L \sin(\alpha) = l \sin(\theta)$,
+Dado que el servomotor se utilizará para mover la barra, es necesario conocer cómo el giro del servo afecta al ángulo de la barra. La Figura~\ref{fig:angulo-barra} muestra un modelo simplificado del sistema servo-barra. Si suponemos que la barra vertical del brazo solo presenta rotaciones muy pequeñas respecto de la vertical, entonces podemos aproximar $x \approx x'$, de donde se obtiene la siguiente relación:
+$$L \sin(\alpha) = l \sin(\theta),$$
 y por lo tanto tendremos que
 \begin{align*}
     \alpha = \sin^{-1}\left(\frac{l}{L} \sin(\theta)\right).

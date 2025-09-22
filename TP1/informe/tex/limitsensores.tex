@@ -12,7 +12,7 @@ Si realizamos un mapeo del rango de tensiones a un rango de ángulos entre \qty{
     \Delta \theta = \frac{\theta_{\max} - \theta_{\min}}{2^N} = \frac{\qty{180}{\degree}}{1024} \approx \qty{0.18}{\degree}.
 \end{equation*}
 
-Para calcular el tiempo requerido para realizar una medición, se realizaron 100 mediciones consecutivas del ADC y se promedió el tiempo de cada una. El valor obtenido fue de \qty{112}{\us}.
+Para calcular el tiempo requerido para realizar una medición, se realizaron 100 mediciones consecutivas del ADC y se promedió el tiempo de cada una. El valor obtenido fue de \qty{112}{\us}. Dado que el ADC del Atmega328P requiere de 13 ciclos de reloj para completar una conversión y que la placa Arduino establece el reloj del ADC en \qty{125}{\kHz} ---prescaler de 128 respecto al reloj de la CPU---, se espera un tiempo de lectura de \qty{104}{\us}, muy cercano al valor obtenido experimentalmente.
 
 Entonces, con la estrategia del potenciómetro y el conversor analógico-digital del microcontrolador se pueden establecer ángulos de referencia con una resolución angular de \qty{0.18}{\degree}, y el tiempo para realizar una medición es de \qty{112}{\us}. Esto es más que apropiado para el diseño de un lazo de control del \emph{ball-and-beam}.
 
