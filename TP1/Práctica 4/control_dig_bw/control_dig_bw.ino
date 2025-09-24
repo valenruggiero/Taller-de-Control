@@ -21,8 +21,8 @@
 #define CALIB_ITERS 25 // Medio segundo de calibración
 
 #define SERVO_AMP_DEG 90
-#define SERVO_MIN_US  600
-#define SERVO_MAX_US  2400
+#define SERVO_MIN_US  500
+#define SERVO_MAX_US  2500
 
 #define SONAR_MAX_CM   50
 #define SONAR_US_PER_M 5831
@@ -32,14 +32,14 @@
 #define PIN_TRIG  6
 #define PIN_ECHO  7
 
-#define ALPHA 0.2
+#define ALPHA 0.01
 
 #define CALIBRATE 1
 
 unsigned long last_time;
 
 Servo servo;
-NewPing sonar(PIN_TRIG, PIN_ECHO, SONAR_MAX_CM);
+// NewPing sonar(PIN_TRIG, PIN_ECHO, SONAR_MAX_CM);
 Adafruit_MPU6050 mpu;
 
 float gyro_bias;
@@ -73,7 +73,7 @@ void setup() {
 
   acc_bias = 0;
   for (int i = 0; i < CALIB_ITERS; i++){
-    delay(CONTROL_PERIOD_US);
+    delayMicroseconds(CONTROL_PERIOD_US);
     mpu.getEvent(&a, &g, &temp);
     acc_bias += atan2(a.acceleration.y, a.acceleration.z) * 180.0 / PI;
   }
@@ -95,26 +95,34 @@ void setup() {
 
 void loop() {
   runPeriodicallyMicros(CONTROL_PERIOD_US);
-
+  static float un1 = 0.0;
+  static float un2 = 0.0;
+  static float en1 = 0.0;
+  static float en2 = 0.0;
+  static float ref = 0;
   static float ang = 0;
 
-  float ref = readReference();
-  float pos = readPosition();
-
   ang = estimateAngle(ang);
+  float e = ref - ang;
+  float u =2.1549*e - 1.8356*en1 + un1;
+  //float u = 4.0/3 * un1 - 1.0/3 * un2 + 18.06*e - 29.55*en1 + 12.09*en2;
+  // float u = 4.0/3 * un1 - 1.0/3 * un2 + 18.15*e - 29.7*en1 + 12.15*en2;
+  un2 = un1;
+  un1 = u;
+  en2 = en1;
+  en1 = e;
 
-  // Hack para probar el servo. Traduce la referencia a un ángulo.
-  //moveServo(remap(ref, -BEAM_MID_M, BEAM_MID_M, -SERVO_AMP_DEG, SERVO_AMP_DEG));
+  moveServo(u);
 
-  float datos[] = { ref, pos, ang };
-  matlab_send(datos);
+  float datos[] = { ang, u, e};
+  //matlab_send(datos);
 
   // Serial.print(ref);
   // Serial.print(", ");
   // Serial.print(pos);
   // Serial.print(", ");
-  // Serial.print(ang);
-  // Serial.println();
+  Serial.print(ang);
+  Serial.println();
 }
 
 /// Toma valores entre -90 y 90 grados.
@@ -127,10 +135,6 @@ void moveServo(float angle) {
 
 /// Devuelve la posición del centro del carrito
 /// respecto del centro de la barra, en metros.
-float readPosition() {
-  float distance = readSonar();
-  return distance + CART_MID_M - BEAM_MID_M;
-}
 
 /// Devuelve una posición de referencia para el carrito
 /// respecto del centro de la varilla, en metros.
@@ -150,13 +154,6 @@ float estimateAngle(float prev_ang) {
   return ALPHA * ang_acc + (1 - ALPHA) * ang_gyro;
 }
 
-float readSonar() {
-  unsigned int us = sonar.ping();
-  if (us == 0) {
-    return (float)SONAR_MAX_CM / 100.0;
-  }
-  return (float)us / SONAR_US_PER_M;
-}
 
 void matlab_send(float data[SEND_COUNT]){
   // Envío de header

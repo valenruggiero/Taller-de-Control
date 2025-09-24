@@ -1,0 +1,56 @@
+close all; clear all; clc;
+optionss = bodeoptions;
+optionss.PhaseMatching = 'on';
+optionss.PhaseMatchingValue = -170;
+optionss.PhaseMatchingFreq=50;
+optionss.Grid='on';
+Ts = 20e-3;
+
+%%
+close all;
+s = tf('s');
+Kc = 34.5853;
+P = zpk([], [-6.96+6.55j -6.96-6.55j], Kc);
+bode(P, optionss);
+C0 = (s+8)^2/(s+20)/s ;
+L0 = C0*P;
+figure, bode(L0, optionss), legend();
+%% Definimos la ganancia para llegar a 60° de MF
+close all;
+C1 = db2mag(17.7)*C0;
+L1 = P*C1;
+figure, bode(L1, optionss), legend();
+figure, margin(L1, optionss);
+figure, step(feedback(L1, 1));
+
+%% Discretizamos
+C_dig_matlab_tustin = c2d(C1, Ts, 'tustin')
+
+syms s z T
+s = 2*(z-1)/T/(1+z);
+C = db2mag(17.)*(s+8)*(s+8)/(s*(s+20));
+C_bil = simplify(subs(C, T, sym(1)/50));
+[zz pp kk] = zpkdata(C_dig_matlab_tustin);
+% display(zz{1});
+% display(pp{1});
+% display(kk);
+% display(vpa(solve(C_b^-1 == 0)));
+% display(vpa(solve(C_b == 0)));
+
+C_dig_matlab_tustin
+
+C_dig_matlab_backward = c2d(C1, Ts, 'zoh');
+
+syms s z T
+s = (z-1)/T/z;
+C_bw = simplify(subs(C, T, sym(1)/50));
+
+% display(vpa(solve(C_b^-1 == 0)));
+% display(vpa(solve(C_b == 0)));
+
+pretty(vpa(C_bw))
+
+%% Tomamos las transferencias discretas calculadas
+z = tf('z', Ts);
+C_dbil = (18.06 *z^2 - 29.55 *z + 12.09)/(z^2 - 1.333* z + 0.3333);
+C_dbw =((11.0 *z - 9.0)^2*  0.44774422771366801043768646195531)/(3.0 *z^2  - 4.0 *z + 1.0);
