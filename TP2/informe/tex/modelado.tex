@@ -1,0 +1,32 @@
+\section{Modelado}
+% Se define la entrada del sistema como la se˜nal de comando u al servomotor. Indique cu´al es la se˜nal de
+% comando que utilizar´a para comandar el mismo (sea la real, o sea virtual a conveniencia), cu´ales son los
+% valores l´ımites, y cu´al es el concepto f´ısico relacionado a dicho valor.
+% Se define la salida como la posici´on del carro p, obtenido del sensor de distancia. Indique c´omo se
+% representa dicho valor en el sistema, en qu´e direcci´on est´a definido, cu´ales son los valores l´ımites que considera.
+% Se define otra variable como el ´angulo de la barra θ, la cual puede considerarse una variable de estado
+% del sistema. Indique c´omo se representa dicho valor en el sistema, en qu´e direcci´on est´a definido, cu´ales son
+% los valores l´ımites que considera.
+% Obtener una representaci´on en variables de estado, y una transferencia entrada-salida del sistema, lin-
+% ealizado en torno al punto donde la barra est´a perfectamente horizontal, y el carro o bola se encuentra en el
+% centro de dicha barra, que se denominar´a el punto de equilibrio. El modelo del sistema puede obtenerse de
+% cualquier manera conveniente. Puede utilizarse un modelo matem´atico donde se midan de manera directa
+% los valores de las variables (pesos, largos, momentos de inercia). Tambi´en un modelo mixto donde se iden-
+% tifiquen de manera pr´actica algunos par´ametros o transferencias del sistema. Es posible tambi´en utilizar un
+% modelado tipo caja negra. Sin embargo, deben recordarse y tenerse en cuenta las ventajas y sobre todo las
+% desventajas de cada uno.
+
+\subsection{Entrada del sistema}
+
+% TODO: referenciar imagen de la planta
+
+Para realizar el control de la planta, se define como entrada de la misma el comando $u$ enviado al servomotor, en grados. El comando real del servomotor se realiza a través de la duración de un pulso PWM, donde un valor de \qty{1500}{\us} se corresponde con un \emph{setpoint} de \qty{0}{\degree} respecto de la horizontal. El ángulo del servomotor se mueve linealmente entre \qty{-90}{\degree} para una entrada temporal de \qty{500}{\us}, y \qty{90}{\degree} para \qty{2500}{\us}. Dado que existe una sencilla relación afín entre el tiempo y el ángulo, es válido utilizar el ángulo como entrada virtual dada su mayor interpretabilidad.
+
+Como el ángulo del servomotor se traduce a través del brazo hacia la barra en forma no lineal, solo es conveniente mover el servomotor una cantidad limitada de grados para mantener al sistema alrededor de un punto donde haya una relación aproximadamente lineal entre el ángulo del servo y el de la barra. Por ello, se decidió limitar la entrada al sistema en el rango \qtyrange{-30}{30}{\degree}.
+
+\subsection{Salida del sistema}
+
+Como salida del sistema se considera a la posición $p$ del carro. La misma mide la posición en metro del centro geométrico del carrito, respecto del centro de la barra. La dirección positiva es la que se aleja del sensor de distancia.
+% TODO: valores límites
+
+
