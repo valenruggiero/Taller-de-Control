@@ -20,13 +20,55 @@
 
 % TODO: referenciar imagen de la planta
 
-Para realizar el control de la planta, se define como entrada de la misma el comando $u$ enviado al servomotor, en grados. El comando real del servomotor se realiza a través de la duración de un pulso PWM, donde un valor de \qty{1500}{\us} se corresponde con un \emph{setpoint} de \qty{0}{\degree} respecto de la horizontal. El ángulo del servomotor se mueve linealmente entre \qty{-90}{\degree} para una entrada temporal de \qty{500}{\us}, y \qty{90}{\degree} para \qty{2500}{\us}. Dado que existe una sencilla relación afín entre el tiempo y el ángulo, es válido utilizar el ángulo como entrada virtual dada su mayor interpretabilidad.
+Para realizar el control de la planta, se define como entrada de la misma el comando $u$ enviado al servomotor, en grados. El comando real del servomotor se realiza a través de la duración de un pulso PWM, donde un valor de \qty{1500}{\us} se corresponde con un \emph{setpoint} de \qty{0}{\degree} respecto de la horizontal. El ángulo comandado al servomotor se mueve linealmente entre \qty{-90}{\degree} para una entrada temporal de \qty{500}{\us}, y \qty{90}{\degree} para \qty{2500}{\us}. Dado que existe una sencilla relación afín entre el tiempo y el ángulo comandado, es válido utilizar el ángulo comandado como entrada virtual dada su mayor interpretabilidad.
 
-Como el ángulo del servomotor se traduce a través del brazo hacia la barra en forma no lineal, solo es conveniente mover el servomotor una cantidad limitada de grados para mantener al sistema alrededor de un punto donde haya una relación aproximadamente lineal entre el ángulo del servo y el de la barra. Por ello, se decidió limitar la entrada al sistema en el rango \qtyrange{-30}{30}{\degree}.
+Como el ángulo comandado al servomotor se traduce a través del brazo hacia la barra en forma no lineal, solo es conveniente mover el servomotor una cantidad limitada de grados para mantener al sistema alrededor de un punto donde haya una relación aproximadamente lineal entre el ángulo del servo y el de la barra. Por ello, se decidió limitar la entrada al sistema en el rango \qtyrange{-30}{30}{\degree}.
 
 \subsection{Salida del sistema}
 
-Como salida del sistema se considera a la posición $p$ del carro. La misma mide la posición en metro del centro geométrico del carrito, respecto del centro de la barra. La dirección positiva es la que se aleja del sensor de distancia.
+Como salida del sistema se considera a la posición $p$ del carro. La misma mide la posición en metros del centro geométrico del carrito, respecto del centro de la barra. La dirección positiva es la que se aleja del sensor de distancia.
 % TODO: valores límites
 
+\subsection{Ángulo de la barra}
 
+Otra variable de interés para el modelado del sistema es el ángulo de la barra $\theta$, medido en grados respecto de la horizontal. Este ángulo se mide positivamente en sentido horario, al igual que el ángulo comandado al servo. Asumiendo la relación linealizada entre estos dos ángulos, donde en estado estacionario $\theta \approx 0.375 u$, los límites de $\theta$ estarán dados por el rango de \qtyrange{-33}{33}{\degree}.
+
+\subsection{Representación en variables de estado}
+
+El sistema se representará en variables de estado alrededor del punto de equilibrio conformado por la barra en posición horizontal y el carro perfectamente centrado. Se considera al sistema como la concatenación de dos subsistemas: el sistema servo-barra cuya entrada es el ángulo del servo $u$ y su salida es el ángulo de la barra $\theta$; y el sistema conformado por el carro, cuya entrada es el ángulo de la barra y su salida es la posición del carro $y = p$.
+
+Entonces, podemos escribir la transferencia completa del sistema como
+\[
+    \frac{Y(s)}{U(s)} = \frac{\Theta(s)}{U(s)} \frac{Y(s)}{\Theta(s)},
+\]
+donde la primera transferencia del lado derecho representa la dinámica del sistema servo-barra, y la segunda representa la dinámica del carro en función del ángulo de la barra.
+
+Para obtener la transferencia $\Theta(s) / U(s)$, primero se notó que el sistema consiste de una parte mecánica de un grado de libertad que puede representarse por un sistema de segundo orden, y luego una parte eléctrica dentro del servomotor que es difícil de representar pero tiene una dinámica muy rápida. Por lo tanto, se decidió representar a la transferencia como un sistema de segundo orden con dos polos y ningún cero, quedando de la siguiente forma:
+\[
+    \frac{\Theta(s)}{U(s)} = \frac{K}{(s+p_1)(s+p_2)}.
+\]
+
+% TODO: agregar gráfico y reemplazar valores
+Se realizó una identificación del sistema a una frecuencia de \qty{50}{\Hz}, introduciendo como comando al servo escalones simétricos de diferentes amplitudes en grados, y midiendo el ángulo de la barra. El sistema discreto a identificar tiene la forma:
+\[
+    \frac{\Theta(z)}{U(z)} = \frac{\gamma}{1 - \alpha z^{-1} - \beta z^{-2}}.
+\]
+MOSTRAR FIGURA. Como resultado de la identificación del sistema se encontró que
+\begin{align*}
+    \alpha = VALOR && \beta = VALOR && \gamma = VALOR.
+\end{align*}
+De aquí se pueden despejar los polos discretos, los cuales resultan en
+\begin{align*}
+    p_1^{(d)} = VALOR && p_2^{(d)} = VALOR,
+\end{align*}
+y utilizando la relación entre polos discretos y continuos dada por
+\[
+    p^{(d)} = e^{p T_s},
+\]
+con $T_s = 1/f_s = \qty{20}{\ms}4$, se llega a que los polos del sistema servo-barra son
+\begin{align*}
+    p_1 = VALOR && p_2 = VALOR.
+\end{align*}
+El sistema entonces es ligeramente oscilante, con una frecuencia de oscilación $w_d = VALOR$ y un coeficiente de amortiguamiento $\zeta = VALOR$.
+
+% vim: ts=4 sts=4 sw=4 et lbr
