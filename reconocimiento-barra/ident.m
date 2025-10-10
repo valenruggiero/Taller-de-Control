@@ -36,8 +36,11 @@ P = zpk([], p, K*abs(p(1))^2)
 y_sim = lsim(P, u, t);
 
 figure;
-plot(t, u); hold on;
-plot(t, y);
-plot(t, y_sim);
-legend('Ángulos de ref','Datos medidos', 'Identificado');
+plot(t, u, 'linewidth', 2); hold on;
+plot(t, y, '--', 'linewidth', 2);
+plot(t, y_sim, ':', 'linewidth', 2);
+xlabel('Tiempo [s]');
+ylabel('Ángulo [⁰]');
+legend('Ángulo comandado','Ángulo medido', 'Sistema identificado');
+grid;
 
