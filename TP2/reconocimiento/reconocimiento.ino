@@ -10,7 +10,7 @@
 #define ADC_MAX  ((2 << ADC_BITS) - 1)
 
 #define BAUD_RATE  115200
-#define SEND_COUNT 3
+#define SEND_COUNT 2
 
 #define CONTROL_PERIOD_US  20000 // 20 ms (50 Hz)
 #define DT                 (CONTROL_PERIOD_US / 1e6)
@@ -21,6 +21,7 @@
 #define CALIB_ITERS 25 // Medio segundo de calibración
 
 #define SERVO_AMP_DEG 90
+#define SERVO_MOVE_MAX 30
 #define SERVO_MIN_US  500
 #define SERVO_MAX_US  2500
 
@@ -32,7 +33,7 @@
 #define PIN_TRIG  6
 #define PIN_ECHO  7
 
-#define ALPHA 0.2
+#define ALPHA 0.05
 
 #define CALIBRATE 1
 
@@ -96,31 +97,37 @@ void setup() {
 void loop() {
   runPeriodicallyMicros(CONTROL_PERIOD_US);
 
-  static float ang = 0;
+  //const float Kp = -100.0;
 
-  float ref = readReference();
+  static float ang = 0;
+  static float time = 0;
+
+  time += DT;
+
   float pos = readPosition();
+
+  float ref = -15;
+
+  // float e = ref - pos;
+  // float u = Kp * e;
+
+  moveServo(ref);
 
   ang = estimateAngle(ang);
 
-  // Hack para probar el servo. Traduce la referencia a un ángulo.
-  //moveServo(remap(ref, -BEAM_MID_M, BEAM_MID_M, -SERVO_AMP_DEG, SERVO_AMP_DEG));
-
-  float datos[] = { ref, pos, ang };
+  float datos[] = { ref, pos };
   matlab_send(datos);
 
-  // Serial.print(ref);
+  // Serial.print(ang);
   // Serial.print(", ");
   // Serial.print(pos);
-  // Serial.print(", ");
-  // Serial.print(ang);
   // Serial.println();
 }
 
 /// Toma valores entre -90 y 90 grados.
 /// Satura valores por fuera de ese rango.
 void moveServo(float angle) {
-  angle = saturate(angle, -SERVO_AMP_DEG, SERVO_AMP_DEG);
+  angle = saturate(angle, -SERVO_MOVE_MAX, SERVO_MOVE_MAX);
   unsigned int us = remap(angle, -SERVO_AMP_DEG, SERVO_AMP_DEG, SERVO_MIN_US, SERVO_MAX_US);
   servo.writeMicroseconds(us);
 }

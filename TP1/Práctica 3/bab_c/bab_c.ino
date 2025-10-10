@@ -102,27 +102,27 @@ void loop() {
   static float refs[] = {0, 30, -30, 20, -20, 15, -15, 10, -10, 5, -5};
 
   //float ref = readReference();
-  float pos = readPosition();
+  //float pos = readPosition();
   time += DT;
   ang = estimateAngle(ang);
 
   int idx = (int)(time/3) % 11;
-  //ref = refs[idx];
-  ref = 0;
+  ref = refs[idx];
+  //ref = 0;
   // Hack para probar el servo. Traduce la referencia a un ángulo.
   //moveServo(remap(ref, -BEAM_MID_M, BEAM_MID_M, -SERVO_AMP_DEG, SERVO_AMP_DEG));
 
   moveServo(ref);
 
   float datos[] = { ref, ang };
-  //matlab_send(datos);
+  matlab_send(datos);
 
-  Serial.print(ref);
-  Serial.print(", ");
-  Serial.print(pos);
-  Serial.print(", ");
-  Serial.print(ang);
-  Serial.println();
+  // Serial.print(ref);
+  // Serial.print(", ");
+  // //Serial.print(pos);
+  // //Serial.print(", ");
+  // Serial.print(ang);
+  // Serial.println();
 }
 
 /// Toma valores entre -90 y 90 grados.
