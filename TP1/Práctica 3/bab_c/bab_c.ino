@@ -115,14 +115,14 @@ void loop() {
   moveServo(ref);
 
   float datos[] = { ref, ang };
-  matlab_send(datos);
+  // matlab_send(datos);
 
-  // Serial.print(ref);
-  // Serial.print(", ");
-  // //Serial.print(pos);
-  // //Serial.print(", ");
-  // Serial.print(ang);
-  // Serial.println();
+  Serial.print(ref);
+  Serial.print(", ");
+  //Serial.print(pos);
+  //Serial.print(", ");
+  Serial.print(ang);
+  Serial.println();
 }
 
 /// Toma valores entre -90 y 90 grados.

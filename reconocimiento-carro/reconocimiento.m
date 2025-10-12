@@ -89,10 +89,10 @@ legends = [];
 ##k_carro=0.01
 
 p_carro=1.6
-k_carro=0.02
+k_carro=-0.02
 
 legends='';
-K = -0.3905*k_carro;
+K = 0.3905*k_carro;
 p = [0, -10.690+4.807j, -10.690-4.807j, p_carro];
 H = zpk([], p, K*abs(p(2))^2*abs(p_carro))
 y_est = lsim(H, u, t);
@@ -101,3 +101,7 @@ plot(t, y_est);
 legend(['u'; 'y'; legends]);
 ylim([-0.15, 0.15])
 grid;
+
+figure;
+step(H, 2);
+title('Reconocimiento 1 (polo en 1.6)');
