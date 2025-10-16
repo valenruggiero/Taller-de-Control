@@ -1,6 +1,6 @@
 close all; clear all; clc;
 
-n = 0.58*50;
+n = 0.66*50;
 
 ##data = dlmread('output20251010-120728.csv')(1:n,:);
 ##data += dlmread('output20251010-121904.csv')(1:n,:);
@@ -26,11 +26,11 @@ n = 0.58*50;
 ##data4 = dlmread('output20251010-130843.csv')(1:n,:);
 ##data5 = dlmread('output20251010-130900.csv')(1:n,:);
 
-data1 = dlmread('output20251016-174252.csv')(31:end,:);
-data2 = dlmread('output20251016-174318.csv')(13:end,:);
-data3 = dlmread('output20251016-174334.csv')(25:end,:);
-data4 = dlmread('output20251016-174356.csv')(14:end,:);
-data5 = dlmread('output20251016-174411.csv')(16:end,:);
+data1 = dlmread('output20251016-181329.csv')(28:end,:);
+data2 = dlmread('output20251016-181342.csv')(7:end,:);
+data3 = dlmread('output20251016-181355.csv')(25:end,:);
+data4 = dlmread('output20251016-181414.csv')(23:end,:);
+data5 = dlmread('output20251016-181427.csv')(15:end,:);
 
 data1 = data1(1:n,:);
 data2 = data2(1:n,:);
@@ -56,7 +56,6 @@ plot(data2(:,1)); hold on;
 plot(data3(:,1)); hold on;
 plot(data4(:,1)); hold on;
 plot(data5(:,1)); hold on;
-
 
 figure;
 plot(data1(:,2)); hold on;
@@ -85,8 +84,8 @@ figure;
 ##plot(t, u); hold;
 stairs(t, y); hold on;
 
-p=2
-k=-0.17
+p=1.5
+k=-0.13
 
 pd = 1/(1+p*Ts)
 H = k*z^2*Ts^2*pd / (z-1) / (z - pd)
@@ -94,8 +93,18 @@ H = k*z^2*Ts^2*pd / (z-1) / (z - pd)
 y_est = lsim(H, u, t);
 stairs(t, y_est);
 
-legend(['y'; 'y estimado']);
+legend(['y'; 'y_estimado']);
+ylim([0, 0.15])
 grid;
+
+s = tf('s');
+p = (1.5 + 2)/2;
+k = -(0.17 + 0.13)/2;
+H = k/s/(s+p)
+
+figure;
+step(9.75*H, 2);
+title('Reconocimiento final');
 
 figure;
 p=1.75

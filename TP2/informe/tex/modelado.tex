@@ -124,36 +124,40 @@ Para obtener la transferencia entre el ángulo de la barra y la posición del ca
 \[
     \frac{Y(s)}{\Theta(s)} = \frac{A}{s(s+p)}.
 \]
-El sistema discreto equivalente tendrá un polo en $z = 1$ proveniente del integrador en el sistema continuo, y otro polo $p^{(d)}$ a determinar, es decir,
+El sistema discreto equivalente, obtenido por aproximación \emph{backwards} con $s = (z-1)/(z T_s)$, tendrá un polo en $z = 1$ proveniente del integrador en el sistema continuo, y otro polo a determinar, es decir,
 \[
-    \frac{Y(z)}{\Theta(z)} = \frac{K^{(d)}}{(z-1)(z+p^{(d)})} = \frac{b z^{-2}}{1 + a z^{-1} - (1+a) z^{-2}}
+    \frac{Y(z)}{\Theta(z)} = \frac{A T_s^2 z^2}{(z - 1)(z (1 + p T_s) - 1)} = \frac{A T_s^2 z^2 p^{(d)}}{(z-1)(z-p^{(d)})},
 \]
+donde $p^{(d)} = 1/(1 + p T_s)$.
 
-Para realizar el reconocimiento del polo faltante, se agregó un controlador proporcional al sistema con $k_p = 100$. Al sistema realimentado se le aplicaron referencias de posición de $\pm \qty{0.05}{\m}$, y se midió el ángulo de la barra y la posición del carrito. Se realizó una regresión lineal a partir de los datos, donde se halló
+Para realizar el reconocimiento del polo faltante, se aplicaron entradas tipo escalón de amplitudes $\pm \qty{25}{\degree}$ a la entrada del sistema a lazo abierto, midiendo el ángulo de la barra y la posición del carrito resultantes. Cada experimento (ángulo positivo y ángulo negativo) se repitió cinco veces, promediando los reultados y ajustando por prueba y error los parámetros $k$ y $p$ de forma tal de que se consiga un buen ajuste de los datos experimentales por parte del sistema discreto. Como resultado, se obtuvo un par de valores para $k$ y un par de valores para $p$, que mejor ajustan el comportamiento de la planta para ángulos positivos y negativos. Se tomó el promedio de cada experimento para obtener así los siguientes valores
 \begin{align*}
-    a = -0.5386 && b = \num{-5.7326e-04}.
+    k = -0.15 && p = \qty{1.75}{\radian\per\s}.
 \end{align*}
-Esto resulta en un polo discreto $p^{(d)} = -0.4614$, y a través de la relación entre polos discretos y continuos tenemos que el polo continuo está en
-\[
-    p = -38.7,
-\]
 de donde la transferencia resulta
 \begin{align*}
-    \frac{Y(s)}{\Theta(s)} = \frac{-0.7585}{s(s+38.7)}.
+    \frac{Y(s)}{\Theta(s)} = \frac{-0.15}{s(s+1.75)}.
 \end{align*}
-La ganancia puede calcularse como $A = p b/(2+a)/Ts$.
 
-La Figura~\ref{fig:ident-carro} muestra el ángulo medido de la barra, la posición medida del carrito, y la salida del sistema encontrado por regresión. Si bien el sistema identificado presenta una deriva considerable que no se observa en la realidad (debido a la acumulación de errores por la presencia del integrador), la forma de la señal en cortos períodos de tiempo se asemeja a la posición real de carrito para un ángulo dado de la barra. Es decir, se captura correctamente la dinámica del sistema con la identificación hecha.
+Las Figuras~\ref{fig:ident-carro} y~\ref{fig:ident-carro2} muestran el ángulo medido de la barra, la posición medida del carrito, y la salida del sistema ajustado manualmente, para ambas excursiones del ángulo. Se observa que incluso después de promediar las asimetrías, la concordancia entre el sistema ajustado y el real es bastante aceptable.
 
 \begin{figure}[!htbp]
     \centering
     \includegraphics[width=\linewidth]{img/ident-carrito.eps}
-    \caption{}
+    \caption{Señales utilizadas para la identificación del sistema barra-carrito, para un ángulo positivo, y salida del sistema ajustado.}
     \label{fig:ident-carro}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\linewidth]{img/ident-carrito2.eps}
+    \caption{Señales utilizadas para la identificación del sistema barra-carrito, para un ángulo negativo, y salida del sistema ajustado.}
+    \label{fig:ident-carro2}
 \end{figure}
 
 A partir de la transferencia hallada, puede encontrarse una representación en variables de estado para este subsistema. Dado que se trata de un sistema de segundo orden, se tendrán dos variables de estado, las cuales se eligen como la posición del carrito $p$ y su velocidad $v$. La entrada al sistema es el ángulo de la barra $\theta$, y la salida es la posición del carro $y = p$.
 
+% FIXME: cambiar por la nueva transferencia
 Despejando de la transferencia, se tiene
 \begin{align*}
     Ys^{2} + 38.7Ys = -0.7585 \Theta
@@ -179,6 +183,7 @@ Entonces, la representación en espacio de estados de este subsistema es
 \end{align*}
 
 \subsubsection{Sistema completo}
+% FIXME: cambiar por la nueva transferencia
 
 A partir de la concatenación de los sistemas anteriormente analizados, se puede encontrar la representación en espacio de estados del sistema completo. Este sistema tendrá como entrada el comando $u$ al servomotor, y su salida será la posición $y = p$ del carrito.
 

@@ -104,18 +104,18 @@ void loop() {
 
   time += DT;
 
-  float pos = readPosition();
 
-  float ref = -15;
+  float ref = -25;
 
   // float e = ref - pos;
   // float u = Kp * e;
 
   moveServo(ref);
 
+  float pos = readPosition();
   ang = estimateAngle(ang);
 
-  float datos[] = { ref, pos };
+  float datos[] = { ang, pos };
   matlab_send(datos);
 
   // Serial.print(ang);
