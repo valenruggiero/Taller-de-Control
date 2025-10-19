@@ -10,7 +10,7 @@
 #define ADC_MAX  ((2 << ADC_BITS) - 1)
 
 #define BAUD_RATE  115200
-#define SEND_COUNT 2
+#define SEND_COUNT 3
 
 #define CONTROL_PERIOD_US  20000 // 20 ms (50 Hz)
 #define DT                 (CONTROL_PERIOD_US / 1e6)
@@ -97,31 +97,28 @@ void setup() {
 void loop() {
   runPeriodicallyMicros(CONTROL_PERIOD_US);
 
-  //const float Kp = -100.0;
+  const float Kp = -150;
+  const float Kd = -0.01;
 
   static float ang = 0;
-  static float time = 0;
 
-  time += DT;
+  static float D = 0.0;
+  static float e_1 = 0.0;
 
-
-  float ref = -25;
-
-  // float e = ref - pos;
-  // float u = Kp * e;
-
-  moveServo(ref);
-
+  float ref = 0.0;
   float pos = readPosition();
   ang = estimateAngle(ang);
 
-  float datos[] = { ref, pos };
-  matlab_send(datos);
+  float e = ref - pos;
 
-  // Serial.print(ang);
-  // Serial.print(", ");
-  // Serial.print(pos);
-  // Serial.println();
+  D = 2/DT * (e-e_1) - D;
+  float u = Kp * e + Kd * D;
+  e_1 = e;
+
+  moveServo(u);
+
+  float datos[] = { e, u, pos };
+  matlab_send(datos);
 }
 
 /// Toma valores entre -90 y 90 grados.

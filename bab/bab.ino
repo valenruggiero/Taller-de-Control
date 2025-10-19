@@ -21,6 +21,7 @@
 #define CALIB_ITERS 25 // Medio segundo de calibración
 
 #define SERVO_AMP_DEG 90
+#define SERVO_MOVE_MAX 30
 #define SERVO_MIN_US  500
 #define SERVO_MAX_US  2500
 
@@ -120,7 +121,7 @@ void loop() {
 /// Toma valores entre -90 y 90 grados.
 /// Satura valores por fuera de ese rango.
 void moveServo(float angle) {
-  angle = saturate(angle, -SERVO_AMP_DEG, SERVO_AMP_DEG);
+  angle = saturate(angle, -SERVO_MOVE_MAX, SERVO_MOVE_MAX);
   unsigned int us = remap(angle, -SERVO_AMP_DEG, SERVO_AMP_DEG, SERVO_MIN_US, SERVO_MAX_US);
   servo.writeMicroseconds(us);
 }

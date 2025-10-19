@@ -82,19 +82,20 @@ y utilizando la relación entre polos discretos y continuos dada por
 \[
     p^{(d)} = e^{p T_s},
 \]
-con $T_s = 1/f_s = \qty{20}{\ms}4$, se llega a que los polos del sistema servo-barra son
+con $T_s = 1/f_s = \qty{20}{\ms}$, se llega a que los polos del sistema servo-barra son
 \begin{align*}
     p_{1,2} = -10.7 \pm 4.81j.
 \end{align*}
 El sistema entonces es ligeramente oscilante, con una frecuencia de oscilación $w_d = \qty{4.81}{\radian\per\s}$ (aproximadamente \qty{0.8}{\Hz}) y un coeficiente de amortiguamiento $\zeta = 0.91$ (casi críticamente amortiguado). Su transferencia es
-\begin{align*}
+\begin{align}
+    \label{eq:tf-servo-barra}
     \frac{\Theta(s)}{U(s)} = \frac{53.64}{s^2 + 21.4 s + 137.6}
     = \frac{0.39}{\left(\frac{s}{11.73}\right)^2 + 2 \frac{0.91 s}{11.73} + 1}.
-\end{align*}
+\end{align}
 
 A partir de la transferencia hallada, puede encontrarse una representación en variables de estado para este subsistema. Dado que se trata de un sistema de segundo orden, se tendrán dos variables de estado, las cuales se eligen como el ángulo de la barra $\theta$ y su velocidad angular $\omega$. La entrada al sistema es el comando $u$ al servo, y la salida es el ángulo de la barra.
 
-Despejando de la transferencia, se tiene
+Despejando de la Ecuación~\eqref{eq:tf-servo-barra}, se tiene
 \begin{align*}
     \Theta s^2 + 21.4 \Theta s + 137.6 \Theta = 53.64 U.
 \end{align*}
@@ -135,9 +136,10 @@ Para realizar el reconocimiento del polo faltante, se aplicaron entradas tipo es
     k = -0.15 && p = \qty{1.75}{\radian\per\s}.
 \end{align*}
 de donde la transferencia resulta
-\begin{align*}
+\begin{align}
+    \label{eq:tf-barra-carro}
     \frac{Y(s)}{\Theta(s)} = \frac{-0.15}{s(s+1.75)}.
-\end{align*}
+\end{align}
 
 Las Figuras~\ref{fig:ident-carro} y~\ref{fig:ident-carro2} muestran el ángulo medido de la barra, la posición medida del carrito, y la salida del sistema ajustado manualmente, para ambas excursiones del ángulo. Se observa que incluso después de promediar las asimetrías, la concordancia entre el sistema ajustado y el real es bastante aceptable.
 
@@ -157,33 +159,31 @@ Las Figuras~\ref{fig:ident-carro} y~\ref{fig:ident-carro2} muestran el ángulo m
 
 A partir de la transferencia hallada, puede encontrarse una representación en variables de estado para este subsistema. Dado que se trata de un sistema de segundo orden, se tendrán dos variables de estado, las cuales se eligen como la posición del carrito $p$ y su velocidad $v$. La entrada al sistema es el ángulo de la barra $\theta$, y la salida es la posición del carro $y = p$.
 
-% FIXME: cambiar por la nueva transferencia
-Despejando de la transferencia, se tiene
+Despejando de la Ecuación~\eqref{eq:tf-barra-carro}, se tiene
 \begin{align*}
-    Ys^{2} + 38.7Ys = -0.7585 \Theta
+    Ys^{2} + 1.75 Y s = -0.15 \Theta
 \end{align*}
 Antitransformando, la ecuación diferencial queda
 \begin{align*}
-    \ddot{y} + 38.7 \dot{y} = -0.7585 \theta
+    \ddot{y} + 1.75 \dot{y} = -0.15 \theta
 \end{align*}
 de donde se puede despejar
 \begin{align*}
-    \ddot{y} = -38.7 \dot{y} - 0.7585 \theta,
+    \ddot{y} = -1.75 \dot{y} - 0.15 \theta,
 \end{align*}
 o equivalentemente,
 \begin{align*}
-    \dot{v} &= -38.7 v - 0.7585 \theta.
+    \dot{v} &= -1.75 v - 0.15 \theta.
 \end{align*}
 
 Entonces, la representación en espacio de estados de este subsistema es
 \begin{align*}
     \begin{bmatrix} \dot{p} \\ \dot{v} \end{bmatrix} =
-        \begin{bmatrix} 0 & 1 \\ 0 & -38.7 \end{bmatrix} \begin{bmatrix} p \\ v \end{bmatrix}
-        + \begin{bmatrix} 0 \\ - 0.7585 \end{bmatrix} \theta.
+        \begin{bmatrix} 0 & 1 \\ 0 & -1.75 \end{bmatrix} \begin{bmatrix} p \\ v \end{bmatrix}
+        + \begin{bmatrix} 0 \\ - 0.15 \end{bmatrix} \theta.
 \end{align*}
 
 \subsubsection{Sistema completo}
-% FIXME: cambiar por la nueva transferencia
 
 A partir de la concatenación de los sistemas anteriormente analizados, se puede encontrar la representación en espacio de estados del sistema completo. Este sistema tendrá como entrada el comando $u$ al servomotor, y su salida será la posición $y = p$ del carrito.
 
@@ -192,7 +192,7 @@ Las ecuaciones diferenciales que describen al sistema completo son
     \dot{\theta} &= \omega, \\
     \dot{\omega} &= -137.6 \theta - 21.4 \omega + 53.64 u, \\
     \dot{p} &= v, \\
-    \dot{v} &= -38.7 v - 0.7585 \theta.
+    \dot{v} &= -1.75 v - 0.15 \theta.
 \end{align*}
 Por lo tanto, una representación en espacio de estados del sistema completo será
 \begin{align*}
@@ -201,7 +201,7 @@ Por lo tanto, una representación en espacio de estados del sistema completo ser
             0 & 1 & 0 & 0 \\
             -137.6 & -21.4 & 0 & 0\\
             0 & 0 & 0 & 1 \\
-            -0.7585 & 0 & 0 & -38.7
+            -0.15 & 0 & 0 & -1.75
         \end{bmatrix}}_{A} \begin{bmatrix} \theta \\ \omega \\ p \\ v \end{bmatrix}
             + \underbrace{\begin{bmatrix} 0 \\ 53.64 \\ 0 \\ 0 \end{bmatrix}}_{B} u,
 \end{align*}
@@ -211,10 +211,20 @@ donde la salida es
 \end{align*}
 
 La transferencia total del sistema será el producto de las transferencias individuales, resultando en
-\begin{align*}
+\begin{align}
+    \label{tf:planta}
     \frac{Y(s)}{U(s)} = \frac{Y(s)}{\Theta(s)} \frac{\Theta(s)}{U(s)}
-        = \frac{53.64}{s^2 + 21.4 s + 137.6} \frac{-0.7585}{s(s+38.7)}
-        = \frac{-40.68}{s (s+38.7) (s^2 + 21.4 s + 137.6)}.
-\end{align*}
+        = \frac{53.64}{s^2 + 21.4 s + 137.6} \frac{-0.15}{s(s+1.75)}
+        = \frac{-8.046}{s (s+1.75) (s^2 + 21.4 s + 137.6)}.
+\end{align}
+
+A modo de verificación final, se realizó una comparación entre la respuesta a un escalón de amplitud \qty{-25}{\degree} de la planta real completa, y la transferencia obtenida en la Ecuación~\eqref{tf:planta}. La Figura~\ref{fig:step-planta} muestra los resultados obtenidos. Se observa una muy buena concordancia entre la transferencia obtenida y la platan real, por lo que se concluye que se tiene una buena modelación de la planta.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\linewidth]{img/step-planta.eps}
+    \caption{Respuesta al escalón de la planta real completa y la transferencia del modelo. Notar que las posiciones se escalaron a centímetros.}
+    \label{fig:step-planta}
+\end{figure}
 
 % vim: ts=4 sts=4 sw=4 et lbr
