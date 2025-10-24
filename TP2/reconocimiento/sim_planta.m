@@ -11,7 +11,9 @@ t=t/50;
 y = lsim(P, data(:,1), t);
 
 figure;
-plot(t, data(:,1), 'linewidth', 2, t, data(:,2), '-.', 'linewidth', 2, t, 100*y, ':', 'linewidth', 2)
+stairs(t, data(:,1), 'linewidth', 2); hold on;
+stairs(t, data(:,2), '-.', 'linewidth', 2);
+stairs(t, 100*y, ':', 'linewidth', 2);
 legend('Entrada', 'Posición medida', 'Posición simulada')
 xlim([0 0.8])
 ylim([-30 30])

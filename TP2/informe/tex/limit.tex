@@ -1,2 +1,27 @@
 \section{Limitaciones de diseño}
 
+% En base a la informaci´on sobre los polos del sistema, y la forma de la planta, indique si hay alguna limitaci´on en cuanto al dise˜no del controlador, considerando si el ancho de banda del lazo tiene limitaciones superiores o inferiores, y justifique. Si no existe dicha limitaci´on, explique las ventajas y desventajas de dise˜nar un controlador con un ancho de banda mayor o menor, desde el punto de vista de velocidad de respuesta, esfuerzo de control, margen de fase y ganancia. Considere que la frecuencia de muestreo y control ser´a de 50Hz
+
+\subsection{Limitaciones propias de la planta}
+
+Las limitaciones de diseño que se pueden presentar en la transferencia de un sistema provienen de singularidades en el semiplano derecho. Los ceros de fase no mínima imponen una limitación superior al ancho de banda del controlador. Por otro lado, los polos inestables imponen un mínimo ancho de banda para realizar un control satisfactorio.
+
+La función de transferencia de la planta completa, mostrada en la Ecuación~\eqref{tf:planta}, no muestra singularidades en el semiplano derecho. Notar que la presencia de un polo en $s = 0$ no presenta una limitación de diseño. Los demás polos son uno real estable (en $s = -1.75$), y otros complejos conjugados de parte real negativa (en $s = -10.7 \pm j4.8$). No hay ningún cero en la transferencia.
+
+Por lo tanto, no hay ninguna limitación de diseño impuesta por la transferencia de la planta linealizada.
+
+\subsection{Limitaciones prácticas}
+
+Si bien la planta no impone limitaciones de diseño, hay otras consideraciones prácticas que pueden limitar el ancho de banda del control.
+
+Hay una limitación superior impuesta por la implementación digital del control a \qty{50}{\Hz}. Por el teorema de Nyquist, no pueden muestrearse señales cuya frecuencia sea superior a los \qty{25}{\Hz} (unos \qty{157}{\radian\per\s}). La frecuencia de corte del controlador debe estar por debajo de dicho valor. Como se introduce un desfasaje que aumenta con la frecuencia, incluso frecuencias un poco menores a la frecuencia de Nyquist podrían producir un sistema inestable a lazo cerrado. Para evitar esto, se recomienda tomar una frecuencia de corte como mucho unas cinco veces menor que la frecuencia de muestreo, resultando en un límite superior de \qty{10}{\Hz} para el control ($w_{gc} < \qty{63}{\radian\per\s}$).
+
+Por otro lado, para evitar el movimiento del servomotor por encima de los límites preestablecidos de $\pm \qty{30}{\degree}$, el control no debe ser demasiado rápido. Un lazo con una frecuencia de corte demasiado alta necesitará acciones de control agresivas, pudiendo saturar estos límites. Además, durante el modelado del sistema servo-barra se consideró que el servomotor tenía una dinámica ``muy rápida,'' y por lo tanto fue despreciada. Si se aumenta la velocidad del control excesivamente, la aproximación dejará de ser válida y la dinámica interna del servo debería ser tomada en cuenta para poder realizar el control.
+
+En cuanto al ruido de medición, el mismo se presenta en frecuencias altas. Un control rápido tenderá a amplificar estas mediciones incorrectas, produciendo acciones de control erráticas. Esto tambień presenta una limitación superior en la velocidad del controlador.
+
+Finalmente, también se puede considerar una limitación inferior a la frecuencia de corte del controlador. Dado que la barra sobre la cual se mueve el carro es de largo acotado, un control excesivamente lento podría ser incapaz de detener el carro, llevando a que se caiga. Recordar que la planta presenta un integrador, por lo que cualquier perturbación producirá un movimiento indefinido del carrito a menos que se actúe para frenarlo.
+
+En conclusión, en la práctica se presentan fenómenos que limitan el ancho de banda del controlador, tanto superior como inferiormente. Se debe buscar un compromiso entre velocidad y estabilidad para lograr un control robusto y de buen rendimiento.
+
+% vim: ts=4 sts=4 sw=4 et lbr

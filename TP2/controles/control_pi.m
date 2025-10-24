@@ -28,7 +28,7 @@ e = data(start:end, 1);
 u = data(start:end, 2);
 y = data(start:end, 3);
 
-y = y - y(1)
+##y = y - y(1)
 
 ##y0 = y(1);
 
@@ -38,17 +38,30 @@ t = (0:n-1)/50;
 ##y_sim = initial(T, [0 0 y0 0 0 0 y0 0], t);
 y_sim = -0.047*impulse(T, t);
 
-figure; impulse(-0.047*C/(1+L));
+figure;
+plot(t,100*y, 'linewidth', 2, t,100*y_sim, '-.', 'linewidth', 2);
+grid;
+xlim([0 20]);
+xlabel('Tiempo [s]');
+ylabel('Posición [cm]');
+legend('Posición real', 'Posición simulada');
+
+u_sim = -0.055*impulse(C/(1+L), t);
 
 figure;
-plot(t,y, t,y_sim);
+plot(t,u, 'linewidth', 2, t,u_sim, '-.', 'linewidth', 2);
+grid;
+xlim([0 20]);
+xlabel('Tiempo [s]');
+ylabel('Ángulo [⁰]');
+legend('Comando real', 'Comando simulado');
 
 
 %% ========================
 
 
-data = dlmread('output20251019-124745.csv');
-##data = dlmread('output20251019-125351.csv');
+##data = dlmread('output20251019-124745.csv');
+data = dlmread('output20251019-125351.csv');
 
 start = 16;
 
@@ -56,7 +69,7 @@ e = data(start:end, 1);
 u = data(start:end, 2);
 y = data(start:end, 3);
 
-y = y - y(1)
+##y = y - y(1)
 
 n = numel(e);
 t = (0:n-1)/50;
@@ -66,5 +79,10 @@ y_sim = 0.1*step(T, t);
 figure; step(0.1*C/(1+L));
 
 figure;
-plot(t,y, t,y_sim);
+plot(t,100*y, 'linewidth', 2, t,100*y_sim, '-.', 'linewidth', 2);
+grid;
+xlim([0 32]);
+xlabel('Tiempo [s]');
+ylabel('Posición [cm]');
+legend('Posición real', 'Posición simulada');
 

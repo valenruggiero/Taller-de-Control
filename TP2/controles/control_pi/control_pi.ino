@@ -97,6 +97,10 @@ void setup() {
 void loop() {
   runPeriodicallyMicros(CONTROL_PERIOD_US);
 
+  // Originales !!
+  // const float Kp = -150;
+  // const float Ki = -30;
+  
   const float Kp = -150;
   const float Ki = -30;
 
