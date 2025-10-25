@@ -46,7 +46,7 @@ xlabel('Tiempo [s]');
 ylabel('Posición [cm]');
 legend('Posición real', 'Posición simulada');
 
-u_sim = -0.055*impulse(C/(1+L), t);
+u_sim = -0.047*impulse(C/(1+L), t);
 
 figure;
 plot(t,u, 'linewidth', 2, t,u_sim, '-.', 'linewidth', 2);

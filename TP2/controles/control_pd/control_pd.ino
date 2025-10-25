@@ -106,7 +106,7 @@ void loop() {
   static float D = 0.0;
   static float e_1 = 0.0;
 
-  float ref = 0.0;
+  float ref = 0.1;
   float pos = readPosition();
   ang = estimateAngle(ang);
 
