@@ -18,7 +18,7 @@
 
 El sistema a modelar se muestra en la Figura~\ref{fig:planta}. Consiste de un servomotor que mueve una barra a través de un brazo. Sobre la barra se coloca un carrito que se desliza libremente. Además, cuenta con una IMU que es capaz de medir el ángulo de la barra, y con un sensor de distancia que mide la posición del carrito a lo largo de la barra.
 
-\begin{figure}[!htbp]
+\begin{figure}[!tbp]
     \centering
     \includegraphics[width=\linewidth]{img/planta.jpg}
     \caption{Sistema \emph{ball-and-beam} a analizar durante el trabajo.}
@@ -51,6 +51,10 @@ Entonces, podemos escribir la transferencia completa del sistema como
 \]
 donde la primera transferencia del lado derecho representa la dinámica del sistema servo-barra, y la segunda representa la dinámica del carro en función del ángulo de la barra.
 
+Se propondrá para la identificación de ambos sistemas un modelo de caja gris. Esto significa que a partir de un conocimiento de la física del sistema, se obtendrá una ``forma'' para la transferencia (cantidad de polos y ceros). Los valores de los parámetros (posición de las singularidades, valores de ganancias) se obtendrán por regresión lineal o por prueba y error. Esto tiene la ventaja de partir de un modelo apegado a la física real del sistema, pero sin la necesidad de medir con precisión parámetros complicados como momentos de inercia.
+
+Sin embargo, trae como desventaja que se trabaja sobre un sistema linealizado alrededor de un punto de equilibrio. El sistema real tenderá a desviarse del identificado cuanto mayor sea el desplazamiento alrededor de dicho punto. Además, hay fenómenos como la fricción que no han sido modelados, lo que se verá que traerá problemas para el control.
+
 \subsubsection{Sistema servo-barra}
 
 Para obtener la transferencia $\Theta(s) / U(s)$, primero se notó que el sistema consiste de una parte mecánica de un grado de libertad que puede representarse por un sistema de segundo orden, y luego una parte eléctrica dentro del servomotor que es difícil de representar pero tiene una dinámica muy rápida. Por lo tanto, se decidió representar a la transferencia como un sistema de segundo orden con dos polos y ningún cero, quedando de la siguiente forma:
@@ -63,7 +67,7 @@ Se realizó una identificación del sistema a una frecuencia de \qty{50}{\Hz}, i
     \frac{\Theta(z)}{U(z)} = \frac{\gamma}{1 - \alpha z^{-1} - \beta z^{-2}}.
 \]
 
-\begin{figure}[!htbp]
+\begin{figure}[!tbp]
     \centering
     \includegraphics[width=\linewidth]{img/ident-barra.eps}
     \caption{Señales comandada y medida, y salida del sistema servo-barra identificado.}
@@ -143,14 +147,14 @@ de donde la transferencia resulta
 
 Las Figuras~\ref{fig:ident-carro} y~\ref{fig:ident-carro2} muestran el ángulo medido de la barra, la posición medida del carrito, y la salida del sistema ajustado manualmente, para ambas excursiones del ángulo. Se observa que incluso después de promediar las asimetrías, la concordancia entre el sistema ajustado y el real es bastante aceptable.
 
-\begin{figure}[!htbp]
+\begin{figure}[!tbp]
     \centering
     \includegraphics[width=\linewidth]{img/ident-carrito.eps}
     \caption{Señales utilizadas para la identificación del sistema barra-carrito, para un ángulo positivo, y salida del sistema ajustado.}
     \label{fig:ident-carro}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{figure}[!tbp]
     \centering
     \includegraphics[width=\linewidth]{img/ident-carrito2.eps}
     \caption{Señales utilizadas para la identificación del sistema barra-carrito, para un ángulo negativo, y salida del sistema ajustado.}
@@ -220,7 +224,7 @@ La transferencia total del sistema será el producto de las transferencias indiv
 
 A modo de verificación final, se realizó una comparación entre la respuesta a un escalón de amplitud \qty{-25}{\degree} de la planta real completa, y la transferencia obtenida en la Ecuación~\eqref{tf:planta}. La Figura~\ref{fig:step-planta} muestra los resultados obtenidos. Se observa una muy buena concordancia entre la transferencia obtenida y la planta real, por lo que se concluye que se tiene una buena modelación de la planta.
 
-\begin{figure}[!htbp]
+\begin{figure}[!tbp]
     \centering
     \includegraphics[width=\linewidth]{img/step-planta.eps}
     \caption{Respuesta al escalón de la planta real completa y la transferencia del modelo. Notar que las posiciones se escalaron a centímetros.}

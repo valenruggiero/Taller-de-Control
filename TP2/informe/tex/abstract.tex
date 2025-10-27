@@ -1,4 +1,7 @@
 \begin{abstract}
+    Este trabajo presenta el modelado y control digital de un sistema tipo ``ball-and-beam.'' Se obtiene un modelo lineal en variables de estado mediante identificación experimental, separando la planta en dos subsistemas: servo-barra y barra-carrito. Se analizan las limitaciones de diseño teóricas y prácticas, como la frecuencia de muestreo ($\qty{50}{\Hz}$) y la saturación. Se implementan controladores P, PI y PD discretos usando la transformación bilineal.
+
+    El rendimiento de cada controlador se valida comparando la respuesta simulada con la planta real ante perturbaciones y escalones de referencia. Los resultados muestran que, a diferencia de la simulación, la fricción no modelada en la planta real genera un error de estado estacionario con el controlador P. Se demuestra que la acción integral del controlador PI es fundamental para eliminar dicho error, mientras que la acción derivativa del PD se ve limitada por la amplificación del ruido.
 \end{abstract}
 
-% vim: ts=4 sts=4 sw=4 et
+% vim: ts=4 sts=4 sw=4 et lbr

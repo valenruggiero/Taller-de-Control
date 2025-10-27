@@ -20,7 +20,9 @@ Por otro lado, para evitar el movimiento del servomotor por encima de los límit
 
 En cuanto al ruido de medición, el mismo se presenta en frecuencias altas. Un control rápido tenderá a amplificar estas mediciones incorrectas, produciendo acciones de control erráticas. Esto tambień presenta una limitación superior en la velocidad del controlador.
 
-Finalmente, también se puede considerar una limitación inferior a la frecuencia de corte del controlador. Dado que la barra sobre la cual se mueve el carro es de largo acotado, un control excesivamente lento podría ser incapaz de detener el carro, llevando a que se caiga. Recordar que la planta presenta un integrador, por lo que cualquier perturbación producirá un movimiento indefinido del carrito a menos que se actúe para frenarlo.
+Una consideración más a favor de un control lento es la robustez. Un controlador con un ancho de banda mayor tiende a tener márgenes de fase y de ganancia menores, lo que lo hace menos tolerante a errores de modelado o retardos no considerados, pudiendo llevar el sistema a la inestabilidad.
+
+Finalmente, también se puede considerar una limitación inferior a la frecuencia de corte del controlador. Dado que la barra sobre la cual se mueve el carro es de largo acotado, un control excesivamente lento podría ser incapaz de detener el carro, llevando a que se caiga. Recordar que la planta presenta un integrador, por lo que cualquier perturbación producirá un movimiento indefinido del carrito a menos que se actúe para frenarlo\footnote{En la realidad, si el movimiento del carro es lo suficientemente lento, la fricción lo detendrá. Un control demasiado lento no llegaría siquiera a mover el carro en caso que este inicie desde el reposo y se deba vencer la fricción estática.}.
 
 En conclusión, en la práctica se presentan fenómenos que limitan el ancho de banda del controlador, tanto superior como inferiormente. Se debe buscar un compromiso entre velocidad y estabilidad para lograr un control robusto y de buen rendimiento.
 
