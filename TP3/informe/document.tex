@@ -1,0 +1,36 @@
+\documentclass[10pt,a4paper]{article}
+
+\pdfsuppresswarningpagegroup=1
+
+\usepackage{graphicx}
+\graphicspath{ {./img/} }
+
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{subcaption}
+
+\usepackage{ifpdf}
+\ifpdf
+  \DeclareGraphicsExtensions{.pdf,.png}
+\else
+\fi
+
+\setcounter{tocdepth}{2}
+
+\usepackage{mystyle}
+
+\runninghead{TP3: Control digital avanzado}
+\footertext{}
+
+\begin{document}
+
+\input{./tex/title.tex}
+\input{./tex/abstract.tex}
+\vspace{1em}
+\tableofcontents
+\thispagestyle{empty}
+
+\clearpage
+\input{./tex/main.tex}
+
+\end{document}

@@ -1,0 +1,31 @@
+\section{Modelado}
+
+El sistema a modelar se muestra en la Figura~\ref{fig:planta}. Consiste de un servomotor que mueve una barra a través de un brazo. Sobre la barra se coloca un carrito que se desliza libremente. Además, cuenta con una IMU que es capaz de medir el ángulo de la barra, y con un sensor de distancia que mide la posición del carrito a lo largo de la barra.
+
+\begin{figure}[!tbp]
+    \centering
+    \includegraphics[width=\linewidth]{img/planta.jpg}
+    \caption{Sistema \emph{ball-and-beam} a analizar durante el trabajo.}
+    \label{fig:planta}
+\end{figure}
+
+La entrada $u$ del sistema es el comando al servomotor, en grados medidos positivamente en sentido antihorario mirando la planta según la Figura~\ref{fig:planta}. Las salidas del sistema son el ángulo $\theta$ de la barra, medido positivamente como el del servomotor, y la posición $p$ del carrito, medida en metros positivamente alejándose del sensor de distancia. Los respectivos ceros de cada variable se corresponden con el punto de equilibrio del sistema, es decir, con la barra y el servo en posición horizontal, y el carrito colocado en el centro de la barra.
+
+Una representación en variables de estado para el sistema discretizado a \qty{50}{\Hz} y linealizado alrededor del punto de equilibrio es la siguiente:
+\begin{align*}
+    \begin{bmatrix} \theta_{k+1} \\ \omega_{k+1} \\ p_{k+1} \\ v_{k+1} \end{bmatrix} =
+        \underbrace{\begin{bmatrix}
+            1 & 0.02 & 0 & 0 \\
+            -2.752 & -0.572 & 0 & 0\\
+            0 & 0 & 1 & 0.02 \\
+            -0.003 & 0 & 0 & 0.9650
+        \end{bmatrix}}_{A_d} \begin{bmatrix} \theta_k \\ \omega_k \\ p_k \\ v_k \end{bmatrix}
+            + \underbrace{\begin{bmatrix} 0 \\ 1.073 \\ 0 \\ 0 \end{bmatrix}}_{B_d} u_k,
+\end{align*}
+Tomando como salidas la el ángulo de la barra y la posición del carrito, además tenemos
+\begin{align*}
+    y_k = \underbrace{\begin{bmatrix} 1&0&0&0\\0&0&1&0 \end{bmatrix}}_{C_d} \begin{bmatrix} \theta_k \\ \omega_k \\ p_k \\ v_k \end{bmatrix}
+        + \underbrace{\begin{bmatrix} 0\\0\\0\\0 \end{bmatrix}}_{D_d} u_k.
+\end{align*}
+
+% vim: ts=4 sts=4 sw=4 et lbr
