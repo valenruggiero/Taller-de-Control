@@ -1,3 +1,66 @@
 \section{Diseño del observador}
 
+Para realizar un control por realimentación de estados, se necesita tener conocimiento de todas las variables de estado que conforman la planta. Dado que no se cuenta con sensores que sean capaces de medir a todas ellas (en particular, no se cuenta con un sensor de la velocidad del carrito y se asumirá que tampoco se cuenta con una medición de la velocidad angular de la barra), se requiere de algún otro método para estimar correctamente sus valores. Esto se realizará a través de un observador de Luenberger, considerando como salidas de la planta al vector $\mathbf{y} = [p \; \theta]^T$.
+
+La expresión general de unn observador de Luenberger en tiempo discreto es
+\begin{align*}
+    \widehat{\mathbf{x}}_{k+1} &= A_d \widehat{\mathbf{x}}_{k} + B_d u_k + L (\mathbf{y}_k - \widehat{\mathbf{y}}_k) \\
+    \widehat{\mathbf{y}}_{k+1} &= C_d \widehat{\mathbf{x}}_k + D_d u_k,
+\end{align*}
+donde $\widehat{\cdot}$ indica la estimación de una variable real. El modelo del observador es idéntico al de la planta, con el agregado del término correctivo $L (\mathbf{y}_k - \widehat{\mathbf{y}}_k)$, que corrige las estimaciones de las variables de forma tal que la salida observada tienda a coincidir con la salida real. Esto corrige errores de modelado y ruidos de medición, entre otras pertubaciones. Puede demostrarse que si el sistema es observable, ocurrirá que tanto la salida estimada como las variables de estado del observador convergerán a sus respectivos valores reales.
+
+\subsection{Verificación de observabilidad}
+
+Para poder diseñar un observador de Luenberger, se requiere que el sistema sea observable. Para ello, debe cumplirse que la matriz de observabilidad
+\begin{align*}
+    \mathcal{O} = \begin{bmatrix}
+        C_d \\
+        C_d A_d \\
+        C_d (A_d)^2 \\
+        C_d (A_d)^3
+    \end{bmatrix} = \begin{bmatrix}
+        1 & 0 & 0 & 0 \\
+        0 & 0 & 1 & 0 \\
+        1 & 0.2 & 0 & 0 \\
+        0 & 0 & 1 & 0.2 \\
+        0.945 & 0.0314 & 0 & 0 \\
+        -0.0001 & 0 & 1 & 0.0393 \\
+        0.8584 & 0.0369 & 0 & 0 \\
+        -0.0002 & -0.000001 & 1 & 0.0579
+    \end{bmatrix},
+\end{align*}
+tenga rango igual al orden del sistema, es decir 4. Puede verificarse que esto es así, y por lo tanto tiene sentido construir un observador de Luenberger. Intuitivamente, esto significa que el conocimiento de las salidas (posición y ángulo) son ``suficientes'' para conocer el comportamiento interno de todas las variables de estado (ellas dos, y sus derivadas).
+
+Si se midiera únicamente la posición $p$ del carro, es decir, si $\widetilde{C}_d = [ 0 \; 0 \; 1 \; 0 ]$, entonces la matriz de observabilidad sería
+\begin{align*}
+    \widetilde{\mathcal{O}} = \begin{bmatrix}
+        \widetilde{C}_d \\
+        \widetilde{C}_d A_d \\
+        \widetilde{C}_d (A_d)^2 \\
+        \widetilde{C}_d (A_d)^3
+    \end{bmatrix} = \begin{bmatrix}
+        0 & 0 & 1 & 0 \\
+        0 & 0 & 1 & 0.2 \\
+        -0.0001 & 0 & 1 & 0.0393 \\
+        -0.0002 & -0.000001 & 1 & 0.0579
+    \end{bmatrix},
+\end{align*}
+que también tiene rango 4. Por ende, un observador basado únicamente en la posición del carrito también será capaz de estimar en forma correcta las demás variables de estado del sistema.
+
+Si en cambio se midiera únicamente el ángulo $\theta$ de la barra, donde $\widetilde{\widetilde{C}}_d = [ 1 \; 0 \; 0 \; 0 ]$, la matriz de observabilidad sería
+\begin{align*}
+    \widetilde{\widetilde{\mathcal{O}}} = \begin{bmatrix}
+        \widetilde{\widetilde{C}}_d \\
+        \widetilde{\widetilde{C}}_d A_d \\
+        \widetilde{\widetilde{C}}_d (A_d)^2 \\
+        \widetilde{\widetilde{C}}_d (A_d)^3
+    \end{bmatrix} = \begin{bmatrix}
+        1 & 0 & 0 & 0 \\
+        1 & 0.2 & 0 & 0 \\
+        0.945 & 0.0314 & 0 & 0 \\
+        0.8584 & 0.0369 & 0 & 0 \\
+    \end{bmatrix},
+\end{align*}
+que a simple vista se observa que tiene rango 2. Por lo tanto, un observador basado únicamente en el ángulo de la barra será incapaz de estimar correctamente todas las variables de estado del sistema. En particular, tendŕa dificultades en estimar la posición y la velocidad del carrito.
+
 % vim: ts=4 sts=4 sw=4 et lbr
