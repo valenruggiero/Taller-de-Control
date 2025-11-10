@@ -1,4 +1,4 @@
-4#include <Adafruit_MPU6050.h>
+#include <Adafruit_MPU6050.h>
 #include <NewPing.h>
 #include <Servo.h>
 
@@ -70,16 +70,18 @@ void setup() {
 
 #if CALIBRATE
   sensors_event_t a, g, temp;
-  mpu.getEvent(&a, &g, &temp);
-  gyro_bias = g.gyro.x;
+  //mpu.getEvent(&a, &g, &temp);
+  //gyro_bias = g.gyro.x;
 
   acc_bias = 0;
   for (int i = 0; i < CALIB_ITERS; i++){
     delayMicroseconds(CONTROL_PERIOD_US);
     mpu.getEvent(&a, &g, &temp);
     acc_bias += atan2(a.acceleration.y, a.acceleration.z) * 180.0 / PI;
+    gyro_bias += g.gyro.x;
   }
   acc_bias /= CALIB_ITERS;
+  gyro_bias /= CALIB_ITERS;
 #else
   // Valores a mano
   gyro_bias = 0;
@@ -120,21 +122,13 @@ void loop() {
   // int idx = (int)(time/.5) % 2;
   if (time < .45){
     ref = -20;
-  } else if (time < 1.1) {
-    ref = 20;
+  } else if (time < 1.5) {
+    ref = 15;
+  } else if (time < 2.5) {
+    ref = -15;
   } else {
     ref = 0;
   }
-  // float t = fmod(time, 1.0f); // tiempo dentro del periodo [0,4)
-  // float ref;
-
-  // if (t < .50f) {
-  //     // primera mitad: rampa descendente de 0 a -25
-  //     ref = -50.0f * t;  // pendiente = (-25 / 2)
-  // } else {
-  //     // segunda mitad: rampa ascendente de -25 a 0
-  //     ref = -25.0f + 50 * (t - .50f);
-  // }
   u=ref;
   moveServo(u);
 
@@ -197,7 +191,7 @@ float estimateAngle(float prev_ang) {
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
   
-  ang_vel = g.gyro.x * 180.0 / PI;
+  ang_vel = (g.gyro.x - gyro_bias) * 180.0 / PI;
   float ang_gyro = prev_ang + DT * (g.gyro.x - gyro_bias) * 180.0 / PI;
   float ang_acc = atan2(a.acceleration.y, a.acceleration.z) * 180.0 / PI - acc_bias;
 
