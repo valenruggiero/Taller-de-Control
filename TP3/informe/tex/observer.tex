@@ -63,4 +63,32 @@ Si en cambio se midiera únicamente el ángulo $\theta$ de la barra, donde $\wid
 \end{align*}
 que a simple vista se observa que tiene rango 2. Por lo tanto, un observador basado únicamente en el ángulo de la barra será incapaz de estimar correctamente todas las variables de estado del sistema. En particular, tendŕa dificultades en estimar la posición y la velocidad del carrito.
 
+\subsection{Diseño por \emph{pole placement}}
+
+Los polos del observador se eligieron de forma tal que la convergencia del mismo sea rápida, pero que al mismo tiempo sea capaz de rechazar el ruido de alta frecuencia que se obtiene de las mediciones. Se eligieron dos polos a una frecuencia cinco veces mayor que la magnitud del mayor polo continuo, y otros dos polos a una frecuencia del doble. Los polos más rápidos se asociaron a las observaciones de ángulo y posición, mientras que los polos lentos se asociaron a las velocidades lineal y angular. Las singularidades lentas se eligieron de forma tal que se redujo el impacto del ruido de la medición (sobre todo en la velocidad), y se contempló el pequeño retraso que hay entre el comando al servo y el momento en que inicia a moverse (impacta a la velocidad angular).
+
+Los polos discretos del observador quedaron entonces en:
+\begin{align*}
+    p_1^{(o,d)} = 0.3094 &&
+    p_2^{(o,d)} = 0.6255 &&
+    p_3^{(o,d)} = 0.3094 &&
+    p_4^{(o,d)} = 0.6255.
+\end{align*}
+
+La matriz de realimentación $L$ fue calculada por \emph{pole placement}. El resultado obtenido fue
+\begin{align*}
+    L = \begin{bmatrix}
+        0.6371 &        0 \\
+       -3.4543 &        0 \\
+             0 &   1.0301 \\
+       -0.0030 &  11.1285
+    \end{bmatrix}.
+\end{align*}
+
+La corrección de los errores de observación en el ángulo y en la posición se realizan en forma proporcional a la diferencia entre el valor observado y el medido. La corrección de la velocidad angular se realiza en forma proporcional al error en el ángulo, modificando la velocidad observada en dirección contraria al error. Para la el error en la observación de la posición, la corrección se hace principalmente en forma proporcional al error en posición, con un ligero peso dado al error en ángulo.
+
+\subsection{Verificación}
+
+Para verificar el correcto funcionamiento del observador, se generó una secuencia de comandos tipo escalón a la entrada de la planta, registrando en cada instante los estados estimados por el observador y los medidos por los sensores. Para la medición de la velocidad angular, se utilizó el giróscopo. Para la medición de la velocidad del carrito, se utilizó una aproximación de la derivada por primera diferencia, la cual es muy ruidosa pero permite obtener al menos algo de información para realizar la comparación.
+
 % vim: ts=4 sts=4 sw=4 et lbr
