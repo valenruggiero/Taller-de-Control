@@ -55,6 +55,7 @@ p_des_d = exp(-Ts*p_des);
 L_o = place(Ad', Cd', p_des_d)'
 
 %% Controlador
+% kr = -1/(Cd*inv(Ad-Bd*K)*Bd);
 % p_c = 0.5*[p_max p_max p_max p_max];
 p_des = 5*[p_max p_max p_max p_max/10];
 p_c = p_des/10;
@@ -89,41 +90,20 @@ p_d = eig(Ad - Bd*K)
 p_c_des = 1/Ts * log(p_d);
 
 %%
-clc;
-K = [8, 0.5076, -350, -5]
+K = acker(Ad, Bd, exp(p_c_des*Ts))
 p_d = eig(Ad - Bd*K)
-p_C = log(p_d)/Ts
-p_C(3) = -abs(p_C(3));
-p_C(4) = -abs(p_C(4));
-K = acker(Ad, Bd, exp(Ts*p_C));
-eig(Ad-Bd*K)
+
 %% PASAMOS EN LIMPIO
-K=[0.2533,   -0.0121, -116.5175,  -30]
+K = [3, 0.5076, -350, -5];
 L_o = [.6371, 0.0; -3.4543, 0.0; 0.0, 1.0301; -0.003, 11.1285];
 G = ss(Ad, Bd, Cd, Dd, Ts);
 RSYS = reg(G, K, L_o)
 vals_obs = [out.ang_o, out.vel_ang_o, out.pos_o, out.vel_o];
 % dlmwrite('obs_der.csv', vals_obs);
-% [y, t] = impulse(RSYS(:, 2));
-[u t] = initial(RSYS(:,2), [0 0 0 -1], 5)
+[y, t] = impulse(RSYS(:, 2));
 close all;
-% figure, impulse(RSYS(:, 2));
+figure, impulse(RSYS(:, 2));
 figure;
-y = lsim(G, u, t, [0 0 0 -1]);
-stairs(t, y(:,2)), hold on;
-figure;
+% plot(y*1e-4), hold on;
 plot(out.pos(250:end));
 hold off;
-
-%% FF
-clc;
-Cd_ff = [0 0 1 0]
-kr = inv(Cd_ff*inv(eye(4)-(Ad-Bd*K))*Bd)
-
-%% Acción integral
-A_ext = [Ad , zeros(4,2);
-    Cd*Ts, eye(2)];
-B_ext = [Bd ; zeros(2,1)];
-
-
-K = acker(A_ext, B_ext, exp(Ts*p_C));
