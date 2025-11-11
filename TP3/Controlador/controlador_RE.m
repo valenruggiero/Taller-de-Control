@@ -121,9 +121,9 @@ Cd_ff = [0 0 1 0]
 kr = inv(Cd_ff*inv(eye(4)-(Ad-Bd*K))*Bd)
 
 %% Acción integral
-A_ext = [Ad , zeros(4,2);
-    Cd*Ts, eye(2)];
-B_ext = [Bd ; zeros(2,1)];
+A_ext = [Ad , zeros(4,1);
+    Cd(1,:)*Ts, eye(1)]
+B_ext = [Bd ; zeros(1,1)]
 
 
-K = acker(A_ext, B_ext, exp(Ts*p_C));
+%K = acker(A_ext, B_ext, exp(Ts*p_C));
