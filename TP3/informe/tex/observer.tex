@@ -98,6 +98,12 @@ Para verificar el correcto funcionamiento del observador, se generó una secuenc
     \label{fig:obs-input}
 \end{figure}
 
+La Figura~\ref{fig:obs-vars} muestra las variables de estado del sistema que fueron medidas por los sensores, así como las estimaciones provistas por el observador. El seguimiento del ángulo de la barra (Figura~\ref{fig:obs-theta}) y la posición del carrito (Figura~\ref{fig:obs-pos}) es rápido, teniéndose una muy pequeña diferencia entre ambos en todo momento. Esto es esperable dada la elección rápida de los polos del observador.
+
+En el caso de la velocidad angular de la barra (Figura~\ref{fig:obs-omega}), el seguimiento es bueno, pero se presenta una clara tendencia a estimar una magnitud menor a la medida. Los cambios muy bruscos de velocidad son seguidos con cierta lentitud, pero la forma cualitativa es correcta. Se logra reducir algo del ruido que se obtendría por la medición directa, el cual de todas formas no es muy grande pues el giróscopo da una señal relativamente limpia.
+
+La gran ganancia se nota en la estimación de la velocidad del carrito (Figura~\ref{fig:obs-vel}). Dado que no se tiene un sensor de velocidad \emph{per se}, la ``medición'' es en realidad la aproximación por primera diferencia, obtenida a partir de la posición. Por este motivo, la señal medida es extremadamente ruidosa. El observador es capaz de captar la tendencia de la velocidad del carrito, reduciendo drásticamente el ruido. Esto va a ser crucial para la etapa de realimentación de estados, donde se podrá utilizar a la velocidad como parte de la señal de control, sin producir las vibraciones que se observaron durante el diseño del controlador PD en el trabajo anterior.
+
 \begin{figure}[!htbp]
     \centering
     \begin{subfigure}{0.49\linewidth}
@@ -126,6 +132,7 @@ Para verificar el correcto funcionamiento del observador, se generó una secuenc
         \label{fig:obs-vel}
     \end{subfigure}
     \caption{Estados medidos y estimados por el observador.}
+    \label{fig:obs-vars}
 \end{figure}
 
 % vim: ts=4 sts=4 sw=4 et lbr
