@@ -149,10 +149,10 @@ void loop() {
   pos_obs = pos_obs1;
   vel_obs = vel_obs1;
 
-  //u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs;
+  u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs;
 
   // Feedforward
-  u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs + FF * ref;
+  //u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs + FF * ref;
   moveServo(u);
 
   float datos[] = {ref, pos, pos_obs, vel, vel_obs, ang, theta_obs, ang_vel, omega_obs};

@@ -1,3 +1,50 @@
 \section{Diseño del controlador}
 
+\subsection{Control por realimentación de estados}
+
+Gracias al observador de Luenberger desarrollado en la Sección~\ref{sec:obs}, se tiene acceso a estimaciones de rápida convergencia y bajo ruido de todas las variables de estado del sistema. Esto permite realizar un control por realimentación de estados, es decir, diseñar un controlador que cumpla con la siguiente relación de control
+\begin{equation*}
+    u_k = K \widehat{\mathbf{x}_k},
+\end{equation*}
+donde $K$ es una matriz de, en nuestro caso particular, $1\times4$. La misma se determina por \emph{pole placement}, utilizando un procedimiento similar al de los polos del observador.
+
+En un principio, el control se realizará con el único objetivo de estabilizar al sistema alrededor del punto de equilibrio. Es decir, no habrá una referencia.
+
+Si se utilizaran los estados reales ($\mathbf{x}_k$) en lugar de los observados ($\widehat{\mathbf{x}_k}$), se tendrá
+\begin{equation*}
+    \mathbf{x}_{k+1} = (A_d + B_d K) \mathbf{x}_k,
+\end{equation*}
+por lo que ajustar $K$ permite colocar los polos del controlador en el lugar deseado, para conseguir una respuesta temporal acorde. Puede demostrarse que el reemplazo del vector $\mathbf{x}_k$ por su versión observada no mueve los polos del controlador, sino que agrega a la dinámica las singularidades pertenecientes al observador. Si se eligen éstas más rápidas, la respuesta del sistema a lazo cerrado estará aún dominada por los polos del controlador.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{noff-theta.eps}
+        \caption{Ángulo de la barra.}
+        \label{fig:noff-theta}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{noff-pos.eps}
+        \caption{Posición del carrito.}
+        \label{fig:noff-pos}
+    \end{subfigure}
+
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{noff-omega.eps}
+        \caption{Velocidad angular de la barra.}
+        \label{fig:noff-omega}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{noff-vel.eps}
+        \caption{Velocidad del carrito.}
+        \label{fig:noff-vel}
+    \end{subfigure}
+    \caption{Estados simulados y estimados por el observador.}
+    \label{fig:noff-vars}
+\end{figure}
+
 % vim: ts=4 sts=4 sw=4 et lbr

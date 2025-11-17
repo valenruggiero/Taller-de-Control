@@ -1,4 +1,5 @@
 \section{Diseño del observador}
+\label{sec:obs}
 
 Para realizar un control por realimentación de estados, se necesita tener conocimiento de todas las variables de estado que conforman la planta. Dado que no se cuenta con sensores que sean capaces de medir a todas ellas (en particular, no se cuenta con un sensor de la velocidad del carrito y se asumirá que tampoco se cuenta con una medición de la velocidad angular de la barra), se requiere de algún otro método para estimar correctamente sus valores. Esto se realizará a través de un observador de Luenberger, considerando como salidas de la planta al vector $\mathbf{y} = [p \; \theta]^T$.
 
