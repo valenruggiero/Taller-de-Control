@@ -122,9 +122,9 @@ void loop() {
   // int idx = (int)(time/.5) % 2;
   if (time < .45){
     ref = -20;
-  } else if (time < 1.5) {
+  } else if (time < 1.45) {
     ref = 15;
-  } else if (time < 2.5) {
+  } else if (time < 2.4) {
     ref = -15;
   } else {
     ref = 0;
@@ -140,7 +140,13 @@ void loop() {
   const float C[2][4] = {{1.0, 0.0, 0.0, 0.0}, 
                   {0.0, 0.0, 1.0, 0.0}};
 
-  const float L[4][2] = {{.6371, 0.0}, {-3.4543, 0.0}, {0.0, 1.0301}, {-0.003, 11.1285}};
+  // const float L[4][2] = {{0.2327, 0.0}, {   -2.2752  , -0.0000}, {0.0, 0.6257}, {-0.003, 4.3615}};
+  const float L[4][2] = {    { 0.0003   , 0.0002},
+   {-0.4655  , -0.0020},
+    {0.0001  ,  0.3918},
+   {-0.0019  ,  1.5908}
+};
+
 
   // A*[th om pos vel] + B*u + L*[th-th_o pos-pos_o]
   // Implementamos observador

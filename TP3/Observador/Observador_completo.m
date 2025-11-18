@@ -35,7 +35,13 @@ p_des_d = exp(-Ts*p_des)
 
 L_o = place(Ad', Cd', p_des_d)'
 
+%% Nuevo obs
+p_des = 5*[p_max 0.4*p_max 0.4*p_max p_max]
+p_des = -10*[1.2 1.21 1.21 .9]
 
+p_des_d = exp(Ts*p_des)
 
+L_o = place(Ad', Cd', p_des_d)'
+eig(Ad-L_o*Cd)
 
 

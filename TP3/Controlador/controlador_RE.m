@@ -121,9 +121,21 @@ Cd_ff = [0 0 1 0]
 kr = inv(Cd_ff*inv(eye(4)-(Ad-Bd*K))*Bd)
 
 %% Acción integral
+clc;
 A_ext = [Ad , zeros(4,1);
-    Cd(1,:)*Ts, eye(1)]
+    -Cd(2,:)*Ts, eye(1)]
 B_ext = [Bd ; zeros(1,1)]
+% p continuos observador:    58.6515   23.4606   23.4606   11.7303
+p_C = -[7 2.2 8 3 8]
 
-
-%K = acker(A_ext, B_ext, exp(Ts*p_C));
+K = acker(A_ext, B_ext, exp(Ts*p_C))
+%% Exporto
+clc;
+vals_obs = [out.ref, out.pos_o, out.vel_o, out.ang_o, out.vel_ang_o];
+dlmwrite('Variables_Cont.csv', vals_obs);
+figure;
+n = length(out.ref);
+t = Ts*(0:n-1);
+plot(t, out.ref); hold on;
+plot(t, out.pos_o);
+hold off;

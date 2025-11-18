@@ -10,7 +10,7 @@
 #define ADC_MAX  ((2 << ADC_BITS) - 1)
 
 #define BAUD_RATE  115200
-#define SEND_COUNT 9
+#define SEND_COUNT 5
 
 #define CONTROL_PERIOD_US  20000 // 20 ms (50 Hz)
 #define DT                 (CONTROL_PERIOD_US / 1e6)
@@ -108,13 +108,18 @@ void loop() {
   static float time = 0;
   static float u = 0;
   static float ref = 0;
+  static float q = 0;
 
 
-  float refs[] = {-0.1, 0.10};
+  float refs[] = {0, -0.1, 0.1};
   if (time < 5.0) {
     ref = refs[0];
-  } else {
+  }
+  else if (time < 10.0) {
     ref = refs[1];
+  } 
+  else {
+    ref = refs[2];
   }
 
   float pos = readPosition();
@@ -131,40 +136,58 @@ void loop() {
   const float C[2][4] = {{1.0, 0.0, 0.0, 0.0}, 
                   {0.0, 0.0, 1.0, 0.0}};
 
-  const float L[4][2] = {{.6371, 0.0}, {-3.4543, 0.0}, {0.0, 1.0301}, {-0.003, 11.1285}};
-  const float K[4] = {0.2533,   -0.0121, -116.5175,  -30};
-  const float FF = -116.5175;
+  const float L[4][2] = {    { 0.0003   , 0.0002},
+   {-0.4655  , -0.0020},
+    {0.0001  ,  0.3918},
+   {-0.0019  ,  1.5908}
+  };
+
+  //const float K[4] = {0.2533,   -0.0121, -116.5175,  -30};
+  const float K[4] = {1.5800,    0.0602, -342.4903, -107.7990    };
+
+  const float H =    278.0686;
+
+
+
+
+
   const float A_ext[5][5] = {
     {  1.0000,  0.0200,  0.0000,  0.0000,  0.0000 },
     { -2.7520,  0.5720,  0.0000,  0.0000,  0.0000 },
     {  0.0000,  0.0000,  1.0000,  0.0200,  0.0000 },
     { -0.0030,  0.0000,  0.0000,  0.9650,  0.0000 },
-    {  0.0200,  0.0000,  0.0000,  0.0000,  1.0000 }
-};
+    {  -0.0200,  0.0000,  0.0000,  0.0000,  1.0000 }
+  };
 
-};
+
   const float B_ext[6] = {0.0, 1.0728, 0.0, 0.0, 0.0};
+
 
 
   // A*[th om pos vel] -K*x + B*u + L*[th-th_o pos-pos_o]
   // Implementamos observador
-  float theta_obs1 = A[0][0]*theta_obs + A[0][1]*omega_obs + A[0][2]*pos_obs + A[0][3]*vel_obs + L[0][0]*(ang-theta_obs) + L[0][1]*(pos-pos_obs);
-  float omega_obs1 = A[1][0]*theta_obs + A[1][1]*omega_obs + A[1][2]*pos_obs + A[1][3]*vel_obs + B[1]*u + L[1][0]*(ang-theta_obs) + L[1][1]*(pos-pos_obs);
+  float theta_obs1 = A_ext[0][0]*theta_obs + A_ext[0][1]*omega_obs + A_ext[0][2]*pos_obs + A_ext[0][3]*vel_obs + L[0][0]*(ang-theta_obs) + L[0][1]*(pos-pos_obs);
+  float omega_obs1 = A_ext[1][0]*theta_obs + A_ext[1][1]*omega_obs + A_ext[1][2]*pos_obs + A_ext[1][3]*vel_obs + B[1]*u + L[1][0]*(ang-theta_obs) + L[1][1]*(pos-pos_obs);
 
-  float pos_obs1   = A[2][0]*theta_obs + A[2][1]*omega_obs + A[2][2]*pos_obs + A[2][3]*vel_obs + L[2][0]*(ang-theta_obs) + L[2][1]*(pos-pos_obs);
-  float vel_obs1   = A[3][0]*theta_obs + A[3][1]*omega_obs + A[3][2]*pos_obs + A[3][3]*vel_obs + L[3][0]*(ang-theta_obs) + L[3][1]*(pos-pos_obs);
+  float pos_obs1   = A_ext[2][0]*theta_obs + A_ext[2][1]*omega_obs + A_ext[2][2]*pos_obs + A_ext[2][3]*vel_obs + L[2][0]*(ang-theta_obs) + L[2][1]*(pos-pos_obs);
+  float vel_obs1   = A_ext[3][0]*theta_obs + A_ext[3][1]*omega_obs + A_ext[3][2]*pos_obs + A_ext[3][3]*vel_obs + L[3][0]*(ang-theta_obs) + L[3][1]*(pos-pos_obs);
+
   theta_obs = theta_obs1;
   omega_obs = omega_obs1;
   pos_obs = pos_obs1;
   vel_obs = vel_obs1;
 
+  const float e = ref - pos_obs; 
+  //float q_1 = A_ext[4][0]*theta_obs + A_ext[4][1]*omega_obs + A_ext[4][2]*pos_obs + A_ext[4][3]*vel_obs + A_ext[4][4]*q;
+  q = q + DT*e;
+
   //u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs;
 
   // Feedforward
-  u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs + FF * ref;
+  u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs - H*q;
   moveServo(u);
 
-  float datos[] = {ref, pos, pos_obs, vel, vel_obs, ang, theta_obs, ang_vel, omega_obs};
+  float datos[] = {ref, pos_obs, vel_obs, theta_obs, omega_obs};
   matlab_send(datos);
 
   // Serial.print(ref);
