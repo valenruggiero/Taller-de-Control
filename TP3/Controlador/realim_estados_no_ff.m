@@ -31,10 +31,10 @@ data = dlmread('obs_ini_right.csv');
 
 start = 1
 
-theta = data(start:end, 1)
-omega = data(start:end, 2)
-pos = data(start:end, 3)
-vel = data(start:end, 4)
+theta = data(start:end, 1);
+omega = data(start:end, 2);
+pos = data(start:end, 3);
+vel = data(start:end, 4);
 
 t_max = Ts*(numel(theta)-1);
 
