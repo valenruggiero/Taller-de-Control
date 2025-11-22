@@ -47,7 +47,7 @@ ylabel('Ángulo [⁰]');
 xlim([0 t_max]);
 legend('Ángulo simulado', 'Ángulo observado');
 grid;
-print -deps ../informe/img/noff-theta.eps
+print -depsc ../informe/img/noff-theta.eps
 
 figure; stairs(t, y(:, 2), '-.'); hold on;
 stairs(t, pos);
@@ -56,7 +56,7 @@ ylabel('Posición [m]');
 xlim([0 t_max]);
 legend('Posición simulada', 'Posición observada');
 grid;
-print -deps ../informe/img/noff-pos.eps
+print -depsc ../informe/img/noff-pos.eps
 
 figure; stairs(t, y(:, 3), '-.'); hold on;
 stairs(t, omega);
@@ -65,7 +65,7 @@ ylabel('Velocidad angular [⁰/s]');
 xlim([0 t_max]);
 legend('Velocidad angular simulada', 'Velocidad angular observada');
 grid;
-print -deps ../informe/img/noff-omega.eps
+print -depsc ../informe/img/noff-omega.eps
 
 figure; stairs(t, y(:, 4), '-.'); hold on;
 stairs(t, vel);
@@ -74,4 +74,4 @@ ylabel('Velocidad [m/s]');
 xlim([0 t_max]);
 legend('Velocidad simulada', 'Velocidad observada');
 grid;
-print -deps ../informe/img/noff-vel.eps
+print -depsc ../informe/img/noff-vel.eps

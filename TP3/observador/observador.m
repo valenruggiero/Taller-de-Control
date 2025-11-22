@@ -27,7 +27,7 @@ ylabel('Ángulo [⁰]');
 xlim([0 t_max]);
 ylim([-25 25])
 grid;
-print -deps ../informe/img/obs-input.eps
+print -depsc ../informe/img/obs-input.eps
 
 figure;
 stairs(t, theta, ':', 'linewidth', 1); hold on;
@@ -37,7 +37,7 @@ ylabel('Ángulo [⁰]');
 legend('Ángulo medido', 'Ángulo estimada');
 xlim([0 t_max]);
 grid;
-print -deps ../informe/img/obs-theta.eps
+print -depsc ../informe/img/obs-theta.eps
 
 
 figure;
@@ -48,7 +48,7 @@ ylabel('Velocidad angular [⁰/s]');
 legend('Velocidad angular medida', 'Velocidad angular estimada');
 xlim([0 t_max]);
 grid;
-print -deps ../informe/img/obs-omega.eps
+print -depsc ../informe/img/obs-omega.eps
 
 figure;
 stairs(t, x, ':', 'linewidth', 1); hold on;
@@ -58,7 +58,7 @@ ylabel('Posición [m]');
 legend('Posición medida', 'Posición estimada');
 xlim([0 t_max]);
 grid;
-print -deps ../informe/img/obs-pos.eps
+print -depsc ../informe/img/obs-pos.eps
 
 figure;
 stairs(t, v, ':', 'linewidth', 1); hold on;
@@ -69,6 +69,6 @@ legend('Velocidad medida', 'Velocidad estimada');
 xlim([0 t_max]);
 ylim([-1.5 1.5]);
 grid;
-print -deps ../informe/img/obs-vel.eps
+print -depsc ../informe/img/obs-vel.eps
 
 
