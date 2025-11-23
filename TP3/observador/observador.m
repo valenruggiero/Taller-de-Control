@@ -30,7 +30,7 @@ grid;
 print -deps ../informe/img/obs-input.eps
 
 figure;
-stairs(t, theta, '-.', 'linewidth', 1); hold on;
+stairs(t, theta, ':', 'linewidth', 1); hold on;
 stairs(t, theta_hat, 'linewidth', 1);
 xlabel('Tiempo [s]');
 ylabel('Ángulo [⁰]');
@@ -41,7 +41,7 @@ print -deps ../informe/img/obs-theta.eps
 
 
 figure;
-stairs(t, omega, '-.', 'linewidth', 1); hold on;
+stairs(t, omega, ':', 'linewidth', 1); hold on;
 stairs(t, omega_hat, 'linewidth', 1);
 xlabel('Tiempo [s]');
 ylabel('Velocidad angular [⁰/s]');
@@ -51,7 +51,7 @@ grid;
 print -deps ../informe/img/obs-omega.eps
 
 figure;
-stairs(t, x, '-.', 'linewidth', 1); hold on;
+stairs(t, x, ':', 'linewidth', 1); hold on;
 stairs(t, x_hat, 'linewidth', 1);
 xlabel('Tiempo [s]');
 ylabel('Posición [m]');
@@ -61,7 +61,7 @@ grid;
 print -deps ../informe/img/obs-pos.eps
 
 figure;
-stairs(t, v, '-.', 'linewidth', 1); hold on;
+stairs(t, v, ':', 'linewidth', 1); hold on;
 stairs(t, v_hat, 'linewidth', 1);
 xlabel('Tiempo [s]');
 ylabel('Velocidad [m/s]');

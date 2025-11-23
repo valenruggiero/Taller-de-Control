@@ -78,8 +78,8 @@ data = readtable(filename);
 pos      = data.pos;
 pos_o    = data.pos_o;
 vel      = data.vel;
-vel_o    = data.vel_o;
-ang      = data.ang;
+vel_o    = data.ang;
+ang      = data.vel_o;
 ang_o    = data.ang_o;
 vel_ang  = data.vel_ang;
 vel_ang_o = data.vel_ang_o;
@@ -90,31 +90,26 @@ t = Ts * (0:n-1);
 
 %% Graficos
 close all;
-
 figure;
 plot(t, pos, '--', 'LineWidth', 1.4); hold on;
 plot(t, pos_o, 'LineWidth', 1.4);
 xlabel('Tiempo [s]'); ylabel('Posición [m]');
 legend('Posición', 'Posición Estimada'); grid on;
-saveas(gcf, 'obs-pos-new.eps', 'epsc');
 
 figure;
-plot(t, vel, '--', 'LineWidth', 1.4); hold on;
+plot(t, vel, '--',  'LineWidth', 1.4); hold on;
 plot(t, vel_o, 'LineWidth', 1.4);
 xlabel('Tiempo [s]'); ylabel('Velocidad [m/s]');
 legend('Velocidad', 'Velocidad Estimada'); grid on;
-saveas(gcf, 'obs-vel-new.eps', 'epsc');
 
 figure;
-plot(t, ang, '--', 'LineWidth', 1.4); hold on;
+plot(t, ang, '--',  'LineWidth', 1.4); hold on;
 plot(t, ang_o, 'LineWidth', 1.4);
 xlabel('Tiempo [s]'); ylabel('Ángulo [°]');
 legend('Ángulo', 'Ángulo Observado'); grid on;
-saveas(gcf, 'obs-theta-new.eps', 'epsc');
 
 figure;
 plot(t, vel_ang, '--', 'LineWidth', 1.4); hold on;
 plot(t, vel_ang_o, 'LineWidth', 1.4);
 xlabel('Tiempo [s]'); ylabel('Velocidad Angular [°/s]');
 legend('Velocidad Angular', 'Velocidad Angular Observada'); grid on;
-saveas(gcf, 'obs-omega-new.eps', 'epsc');

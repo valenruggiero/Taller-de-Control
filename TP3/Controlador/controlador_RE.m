@@ -126,7 +126,7 @@ A_ext = [Ad , zeros(4,1);
     -Cd(2,:)*Ts, eye(1)]
 B_ext = [Bd ; zeros(1,1)]
 % p continuos observador:    58.6515   23.4606   23.4606   11.7303
-p_C = -[7 2.2 8 3 8]
+p_C = -[7 2.2 8 2.5 7]
 
 K = acker(A_ext, B_ext, exp(Ts*p_C))
 %% Exporto
@@ -139,3 +139,5 @@ t = Ts*(0:n-1);
 plot(t, out.ref); hold on;
 plot(t, out.pos_o);
 hold off;
+
+%% Grafico

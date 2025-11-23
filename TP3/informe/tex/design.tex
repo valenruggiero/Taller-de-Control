@@ -47,4 +47,61 @@ por lo que ajustar $K$ permite colocar los polos del controlador en el lugar des
     \label{fig:noff-vars}
 \end{figure}
 
+
+\subsection{Actualización de observador}
+Se optó por ralentizar los polos del observador luego de la primera implementación del control por realimentación de estados con control integral. La razón de esto fue que la acción de control era muy ruidosa y oscilante en esta instancia y al modificar los polos deseados de todas las formas posibles y no obtener respuesta positiva la única opción restante era que el observador se encontraba siguiendo a la planta demasiado rápido. Se comprobó esto al estudiar más en profundidad su comportamiento, observado previamente en la \autoref{fig:obs-vars}, que ya se preveía que observaba muy rápidamente.
+
+Se requería que el observador siga de manera mucho más suave a las variables, por lo que se partió de la base de disminuir la magnitud de los polos continuos deseados. En principio se fijaron en un valor levemente mayor al polo más rápido de la planta: los cuatro polos deseados rondando los $\SI{-12}{\radian\per\second}$ cuando el polo máximo es $\SI{11.7303}{\radian\per\second}$. Luego se ajustaron finamente los valores hasta obtener señales suaves como las observadas en la \autoref{fig:obs-vars-new}. 
+
+Los polos discretos utilizados finalmente son:
+
+\begin{align*}  
+	p_1^{(o,d)} = 0.7900 &&
+	p_2^{(o,d)} = 0.7867 &&
+	p_3^{(o,d)} = 0.7851 &&
+	p_4^{(o,d)} = 0.7831.
+\end{align*}
+
+Y la matriz de realimentación $L$ resultó en:
+\begin{align*}
+	L = \begin{bmatrix}
+		 0.0003 & 0.0002\\
+		-0.4655 & -0.0020\\
+		0.0001 & 0.3918\\
+		-0.0019 & 1.5908
+	\end{bmatrix}.
+\end{align*}
+
+
+\begin{figure}[!htbp]
+	\centering
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{obs-theta-new.eps}
+		\caption{Ángulo de la barra.}
+		\label{fig:obs-theta-new}
+	\end{subfigure}
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{obs-pos-new.eps}
+		\caption{Posición del carrito.}
+		\label{fig:obs-pos-new}
+	\end{subfigure}
+	
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{obs-omega-new.eps}
+		\caption{Velocidad angular de la barra.}
+		\label{fig:obs-omega-new}
+	\end{subfigure}
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{obs-vel-new.eps}
+		\caption{Velocidad del carrito.}
+		\label{fig:obs-vel-new}
+	\end{subfigure}
+	\caption{Estados medidos y estimados por el observador actualizado.}
+	\label{fig:obs-vars-new}
+\end{figure}
+
 % vim: ts=4 sts=4 sw=4 et lbr
