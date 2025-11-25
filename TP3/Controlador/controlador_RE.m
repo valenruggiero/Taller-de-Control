@@ -130,21 +130,32 @@ B_ext = [Bd ; zeros(1,1)]
 %   -11.9976
 %   -12.0971
 %   -12.2231
-p_C = -[7 2.2 8 2.5 7.5]
+p_C = -[7 2.2 8 2.5 7]
 
 K = acker(A_ext, B_ext, exp(Ts*p_C))
+L_o = [ 0.0003  0.0002;
+   -0.4655  -0.0020;
+   0.0001  0.3918;
+   -0.0019  1.5908]
 % display(K(1))
 % display(K(2))
 % display(K(3))
 % display(K(4))
 % display(K(5))
-%% Exporto
+%% Exporto, abro, grafico
 clc;
 headers = {'ref', 'pos_o', 'vel_o', 'ang_o', 'vel_ang_o'};
 vals_obs = [out.ref, out.pos_o, out.vel_o, out.ang_o, out.vel_ang_o];
 
 % Guardar CSV con encabezados
-filename = 'Variables_Cont.csv';
+% Obtener fecha-hora actual
+dt = datetime('now','Format','yyMMddHHmmss'); 
+
+% Pasarlo a string
+dt_str = char(dt);   % convierte datetime a char
+
+% Crear filename final
+filename = ['Control_Integral' '_' dt_str '.csv'];
 fid = fopen(filename, 'w');
 
 % Escribir encabezados
@@ -155,8 +166,7 @@ fclose(fid);
 % Escribir datos
 dlmwrite(filename, vals_obs, '-append');
 
-%% Abro el .csv
-filename = 'Control_Integral.csv';
+% Abro el .csv
 data = readtable(filename);
 
 % Extraer variables desde la tabla
@@ -166,16 +176,16 @@ vel_o    = data.vel_o;
 ang_o    = data.ang_o;
 vel_ang_o = data.vel_ang_o;
 
-%% Crear vector de tiempo
+% Crear vector de tiempo
 n = height(data);          % cantidad de muestras
 t = Ts * (0:n-1);          
 
-%% Graficos
+% Graficos
 close all;
 
 figure;
-plot(t, ref, '--', 'LineWidth', 1.4); hold on;
-plot(t, pos_o, 'LineWidth', 1.4);
+stairs(t, ref, '--', 'LineWidth', 1.4); hold on;
+stairs(t, pos_o, 'LineWidth', 1.4);
 xlabel('Tiempo [s]'); ylabel('Posición [m]');
 legend('Referencia', 'Posición observada'); grid on;
 saveas(gcf, 'pid-re-pos.eps', 'epsc');
