@@ -117,7 +117,7 @@ hold off;
 
 %% FF
 clc;
-Cd_ff = [0 0 1 0]
+Cd_ff = [0 0 1 0] % Solo quiero la variable posicion
 kr = inv(Cd_ff*inv(eye(4)-(Ad-Bd*K))*Bd)
 
 %% Acción integral
@@ -125,19 +125,75 @@ clc;
 A_ext = [Ad , zeros(4,1);
     -Cd(2,:)*Ts, eye(1)]
 B_ext = [Bd ; zeros(1,1)]
-% p continuos observador:    58.6515   23.4606   23.4606   11.7303
-p_C = -[7 2.2 8 2.5 7]
+% p continuos observador:
+%   -11.7857
+%   -11.9976
+%   -12.0971
+%   -12.2231
+p_C = -[7 2.2 8 2.5 7.5]
 
 K = acker(A_ext, B_ext, exp(Ts*p_C))
+% display(K(1))
+% display(K(2))
+% display(K(3))
+% display(K(4))
+% display(K(5))
 %% Exporto
 clc;
+headers = {'ref', 'pos_o', 'vel_o', 'ang_o', 'vel_ang_o'};
 vals_obs = [out.ref, out.pos_o, out.vel_o, out.ang_o, out.vel_ang_o];
-dlmwrite('Variables_Cont.csv', vals_obs);
-figure;
-n = length(out.ref);
-t = Ts*(0:n-1);
-plot(t, out.ref); hold on;
-plot(t, out.pos_o);
-hold off;
 
-%% Grafico
+% Guardar CSV con encabezados
+filename = 'Variables_Cont.csv';
+fid = fopen(filename, 'w');
+
+% Escribir encabezados
+fprintf(fid, '%s,', headers{1:end-1});
+fprintf(fid, '%s\n', headers{end});
+fclose(fid);
+
+% Escribir datos
+dlmwrite(filename, vals_obs, '-append');
+
+%% Abro el .csv
+filename = 'Control_Integral.csv';
+data = readtable(filename);
+
+% Extraer variables desde la tabla
+ref      = data.ref;
+pos_o    = data.pos_o;
+vel_o    = data.vel_o;
+ang_o    = data.ang_o;
+vel_ang_o = data.vel_ang_o;
+
+%% Crear vector de tiempo
+n = height(data);          % cantidad de muestras
+t = Ts * (0:n-1);          
+
+%% Graficos
+close all;
+
+figure;
+plot(t, ref, '--', 'LineWidth', 1.4); hold on;
+plot(t, pos_o, 'LineWidth', 1.4);
+xlabel('Tiempo [s]'); ylabel('Posición [m]');
+legend('Referencia', 'Posición observada'); grid on;
+saveas(gcf, 'pid-re-pos.eps', 'epsc');
+
+% figure;
+% plot(t, vel_o, 'LineWidth', 1.4);
+% xlabel('Tiempo [s]'); ylabel('Velocidad [m/s]');
+% legend('Velocidad', 'Velocidad Estimada'); grid on;
+% saveas(gcf, 'pid-re-vel.eps', 'epsc');
+% 
+% figure;
+% plot(t, ang_o, 'LineWidth', 1.4);
+% xlabel('Tiempo [s]'); ylabel('Ángulo [°]');
+% legend('Ángulo Observado'); grid on;
+% saveas(gcf, 'pid-re-theta.eps', 'epsc');
+% 
+% figure;
+% plot(t, vel_ang_o, 'LineWidth', 1.4);
+% xlabel('Tiempo [s]'); ylabel('Velocidad Angular [°/s]');
+% legend('Velocidad Angular Observada'); grid on;
+% saveas(gcf, 'pid-re-omega.eps', 'epsc');

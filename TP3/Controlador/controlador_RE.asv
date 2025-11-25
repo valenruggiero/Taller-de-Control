@@ -55,7 +55,6 @@ p_des_d = exp(-Ts*p_des);
 L_o = place(Ad', Cd', p_des_d)'
 
 %% Controlador
-% kr = -1/(Cd*inv(Ad-Bd*K)*Bd);
 % p_c = 0.5*[p_max p_max p_max p_max];
 p_des = 5*[p_max p_max p_max p_max/10];
 p_c = p_des/10;
@@ -90,20 +89,112 @@ p_d = eig(Ad - Bd*K)
 p_c_des = 1/Ts * log(p_d);
 
 %%
-K = acker(Ad, Bd, exp(p_c_des*Ts))
+clc;
+K = [8, 0.5076, -350, -5]
 p_d = eig(Ad - Bd*K)
-
+p_C = log(p_d)/Ts
+p_C(3) = -abs(p_C(3));
+p_C(4) = -abs(p_C(4));
+K = acker(Ad, Bd, exp(Ts*p_C));
+eig(Ad-Bd*K)
 %% PASAMOS EN LIMPIO
-K = [3, 0.5076, -350, -5];
+K=[0.2533,   -0.0121, -116.5175,  -30]
 L_o = [.6371, 0.0; -3.4543, 0.0; 0.0, 1.0301; -0.003, 11.1285];
 G = ss(Ad, Bd, Cd, Dd, Ts);
 RSYS = reg(G, K, L_o)
 vals_obs = [out.ang_o, out.vel_ang_o, out.pos_o, out.vel_o];
 % dlmwrite('obs_der.csv', vals_obs);
-[y, t] = impulse(RSYS(:, 2));
+% [y, t] = impulse(RSYS(:, 2));
+[u t] = initial(RSYS(:,2), [0 0 0 -1], 5)
 close all;
-figure, impulse(RSYS(:, 2));
+% figure, impulse(RSYS(:, 2));
 figure;
-% plot(y*1e-4), hold on;
+y = lsim(G, u, t, [0 0 0 -1]);
+stairs(t, y(:,2)), hold on;
+figure;
 plot(out.pos(250:end));
 hold off;
+
+%% FF
+clc;
+Cd_ff = [0 0 1 0] % Solo quiero la variable posicion
+kr = inv(Cd_ff*inv(eye(4)-(Ad-Bd*K))*Bd)
+
+%% Acción integral
+clc;
+A_ext = [Ad , zeros(4,1);
+    -Cd(2,:)*Ts, eye(1)]
+B_ext = [Bd ; zeros(1,1)]
+% p continuos observador:    58.6515   23.4606   23.4606   11.7303
+p_C = -[7 2.2 8 2.5 7]
+
+K = acker(A_ext, B_ext, exp(Ts*p_C))
+%% Exporto
+
+dlmwrite('Variables_Cont.csv', vals_obs);
+figure;
+n = length(out.ref);
+t = Ts*(0:n-1);
+plot(t, out.ref); hold on;
+plot(t, out.pos_o);
+hold off;
+%% Exporto
+clc;
+headers = {'ref', 'pos_o', 'vel_o', 'ang_o', 'vel_ang_o'};
+vals_obs = [out.ref, out.pos_o, out.vel_o, out.ang_o, out.vel_ang_o];
+
+% Guardar CSV con encabezados
+filename = 'Variables_Cont.csv';
+fid = fopen(filename, 'w');
+
+% Escribir encabezados
+fprintf(fid, '%s,', headers{1:end-1});
+fprintf(fid, '%s\n', headers{end});
+fclose(fid);
+
+% Escribir datos
+dlmwrite(filename, vals_obs, '-append');
+
+%% Abro el .csv
+filename = 'Variables_Cont.csv';
+data = readtable(filename);
+
+% Extraer variables desde la tabla
+ref      = data.ref;
+pos_o    = data.pos_o;
+vel_o    = data.vel_o;
+ang_o    = data.ang_o;
+vel_ang_o = data.vel_ang_o;
+
+%% Crear vector de tiempo
+n = height(data);          % cantidad de muestras
+t = Ts * (0:n-1);          
+
+%% Graficos
+close all;
+
+figure;
+plot(t, ref, '--', 'LineWidth', 1.4); hold on;
+plot(t, pos_o, 'LineWidth', 1.4);
+xlabel('Tiempo [s]'); ylabel('Posición [m]');
+legend('Referencia', 'Posición observada'); grid on;
+saveas(gcf, 'pid-re-pos.eps', 'epsc');
+
+figure;
+plot(t, vel, '--', 'LineWidth', 1.4); hold on;
+plot(t, vel_o, 'LineWidth', 1.4);
+xlabel('Tiempo [s]'); ylabel('Velocidad [m/s]');
+legend('Velocidad', 'Velocidad Estimada'); grid on;
+saveas(gcf, 'pid-re-vel.eps', 'epsc');
+
+figure;
+plot(t, ang_o, 'LineWidth', 1.4);
+xlabel('Tiempo [s]'); ylabel('Ángulo [°]');
+legend('Ángulo Observado'); grid on;
+saveas(gcf, 'pid-re-theta.eps', 'epsc');
+
+figure;
+plot(t, vel_ang_o, 'LineWidth', 1.4);
+xlabel('Tiempo [s]'); ylabel('Velocidad Angular [°/s]');
+legend('Velocidad Angular Observada'); grid on;
+saveas(gcf, 'pid-re-omega.eps', 'epsc');
