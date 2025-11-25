@@ -85,7 +85,7 @@ Las velocidades angular y lineal se muestran en las Figuras~\ref{fig:noff-omega}
 
 \subsection{Agregado de ganancia de \emph{feed-forward}}
 
-\subsection{Actualización de observador}
+\subsubsection{Actualización de observador}
 
 Se optó por ralentizar los polos del observador tras observar un alto nivel de ruido durante el agregado de la matriz de \emph{feed-forward}. La razón de esto fue que la acción de control era muy ruidosa y oscilante en esta instancia y al modificar los polos deseados de todas las formas posibles y no obtener respuesta positiva la única opción restante era que el observador se encontraba siguiendo a la planta demasiado rápido. Se comprobó esto al estudiar más en profundidad su comportamiento, observado previamente en la Figura~\ref{fig:obs-vars}, que ya se preveía que observaba muy rápidamente.
 
@@ -197,5 +197,41 @@ Las Figuras~\ref{fig:ff-omega} y~\ref{fig:ff-vel} muestran las velocidades angul
     \caption{Estados simulados y estimados por el observador para la realimentación de estados con \emph{feed-forward}.}
     \label{fig:ff-vars}
 \end{figure}
+
+\subsection{Acción integral}
+
+Con el fin de eliminar el error en estado estacionario que inevitablemente ocurre por efecto de la fricción, se agrega acción integral al controlador. En este paso también se buscará un control rápido, cuyo tiempo de establecimiento sea menor a \qty{2.5}{\s} y tenga un sobrepico menor al \qty{15}{\percent}.
+
+Para ello, se vuelve a cerrar el lazo con un nuevo controlador integral, regido por la ecuación
+\begin{equation*}
+    q_{k+1} = q_k + T_s e_k,
+\end{equation*}
+donde $e_k = r_k - p_k$, notando que ahora la planta tiene una única salida (la posición $p$) y una única referencia de posición ($r$). Ahora se tiene \[C_d = [ 0 \; 0 \; 1 \; 0 ]. \]
+
+El sistema completo queda regido por
+\begin{align*}
+    \begin{bmatrix}\mathbf{x}_{k+1} \\ q_{k+1} \end{bmatrix} &=
+        \left( A_{\mathrm{ext}} + B_{\mathrm{ext}} \begin{bmatrix}K & H\end{bmatrix} \right)
+        \begin{bmatrix}\mathbf{x}_{k} \\ q_k \end{bmatrix},
+\end{align*}
+donde
+\begin{align*}
+    A_{\mathrm{ext}} = \begin{bmatrix} A_{d} & 0 \\ -C_{d} T_s & \mathbf{I} \end{bmatrix}
+        && B_{\mathrm{ext}} = \begin{bmatrix}B_d \\ 0\end{bmatrix}.
+\end{align*}
+
+\subsubsection{Diseño}
+
+Los polos elegidos para el control fueron los siguientes
+\begin{align*}
+	p_1^{(C,c)} =  &&
+	p_2^{(C,c)} =  &&
+	p_3^{(C,c)} =  &&
+	p_4^{(C,c)} = .
+\end{align*}
+En discreto, se corresponden con...
+
+
+
 
 % vim: ts=4 sts=4 sw=4 et lbr
