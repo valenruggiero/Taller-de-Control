@@ -166,7 +166,8 @@ fclose(fid);
 % Escribir datos
 dlmwrite(filename, vals_obs, '-append');
 
-% Abro el .csv
+%% Abro el control_int.csv
+filename = 'Control_Integral_251125185008.csv';
 data = readtable(filename);
 
 % Extraer variables desde la tabla
@@ -207,3 +208,51 @@ saveas(gcf, 'pid-re-pos.eps', 'epsc');
 % xlabel('Tiempo [s]'); ylabel('Velocidad Angular [°/s]');
 % legend('Velocidad Angular Observada'); grid on;
 % saveas(gcf, 'pid-re-omega.eps', 'epsc');
+
+%% Real vs Simulado
+clc;
+headers2 = {'pos_s', 'vel_s', 'ang_s', 'vel_ang_s'};
+vals_simu = [out.states(:,3), out.states(:,4), out.states(:,1), out.states(:,2)];
+
+% Guardar CSV con encabezados
+% Obtener fecha-hora actual
+dt = datetime('now','Format','yyMMddHHmmss'); 
+
+% Pasarlo a string
+dt_str = char(dt);   % convierte datetime a char
+
+% Crear filename final
+filename2 = ['Vars_Simuladas' '_' dt_str '.csv'];
+fid = fopen(filename2, 'w');
+
+% Escribir encabezados
+fprintf(fid, '%s,', headers2{1:end-1});
+fprintf(fid, '%s\n', headers2{end});
+fclose(fid);
+
+% Escribir datos
+dlmwrite(filename2, vals_simu, '-append');
+
+%% Abro el simu.csv
+filename2 = 'Vars_Simuladas_251125200820.csv';
+data2 = readtable(filename2);
+
+% Extraer variables desde la tabla
+pos_s    = data2.pos_s;
+vel_s    = data2.vel_s;
+ang_s    = data2.ang_s;
+vel_ang_s = data2.vel_ang_s;
+
+% Crear vector de tiempo
+n2 = height(data2);          % cantidad de muestras
+t2 = Ts * (0:n2-1);          
+
+% Graficos
+close all;
+
+figure;
+stairs(t2, pos_s, '--', 'LineWidth', 1.4); hold on;
+stairs(t, -pos_o, 'LineWidth', 1.4);
+xlabel('Tiempo [s]'); ylabel('Posición [m]');
+legend('Referencia', 'Posición observada'); grid on;
+saveas(gcf, 'pid-re-pos.eps', 'epsc');
