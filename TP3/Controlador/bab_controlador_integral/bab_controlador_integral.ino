@@ -10,7 +10,7 @@
 #define ADC_MAX  ((2 << ADC_BITS) - 1)
 
 #define BAUD_RATE  115200
-#define SEND_COUNT 5
+#define SEND_COUNT 9
 
 #define CONTROL_PERIOD_US  20000 // 20 ms (50 Hz)
 #define DT                 (CONTROL_PERIOD_US / 1e6)
@@ -110,12 +110,11 @@ void loop() {
   static float ref = 0;
   static float q = 0;
 
-
-  float refs[] = {0, -0.1, 0.1};
-  if (time < 5.0) {
+  float refs[] = {-0.1, 0.1, -0.1};
+  if (time < 6.0) {
     ref = refs[0];
   }
-  else if (time < 10.0) {
+  else if (time < 12.0) {
     ref = refs[1];
   } 
   else {
@@ -123,7 +122,7 @@ void loop() {
   }
 
   float pos = readPosition();
-  vel = (pos- pos1)/DT;
+  vel = (pos-pos1)/DT;
   pos1 = pos;
   ang = estimateAngle(ang);
   time += DT;
@@ -142,27 +141,20 @@ void loop() {
    {-0.0019  ,  1.5908}
   };
 
-  //const float K[4] = {0.2533,   -0.0121, -116.5175,  -30};
-  const float K[4] = {1.5800,    0.0602, -342.4903, -107.7990    };
+  const float K[4] = { 2.0602e-01,  -1.9697e-02,  -1.6814e+02,  -5.7641e+01};
 
-  const float H =    278.0686;
-
-
-
-
+  const float H = 1.2073e+02;
 
   const float A_ext[5][5] = {
     {  1.0000,  0.0200,  0.0000,  0.0000,  0.0000 },
     { -2.7520,  0.5720,  0.0000,  0.0000,  0.0000 },
     {  0.0000,  0.0000,  1.0000,  0.0200,  0.0000 },
     { -0.0030,  0.0000,  0.0000,  0.9650,  0.0000 },
-    {  -0.0200,  0.0000,  0.0000,  0.0000,  1.0000 }
+    {  0.0000,  0.0000,  -0.020,  0.0000,  1.0000 }
   };
 
 
   const float B_ext[6] = {0.0, 1.0728, 0.0, 0.0, 0.0};
-
-
 
   // A*[th om pos vel] -K*x + B*u + L*[th-th_o pos-pos_o]
   // Implementamos observador
@@ -178,24 +170,19 @@ void loop() {
   vel_obs = vel_obs1;
 
   const float e = ref - pos_obs; 
-  //float q_1 = A_ext[4][0]*theta_obs + A_ext[4][1]*omega_obs + A_ext[4][2]*pos_obs + A_ext[4][3]*vel_obs + A_ext[4][4]*q;
   q = q + DT*e;
 
-  //u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs;
-
-  // Feedforward
   u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs - H*q;
   moveServo(u);
 
-  float datos[] = {ref, pos_obs, vel_obs, theta_obs, omega_obs};
+  float datos[] = {ref, pos, pos_obs, vel, vel_obs, ang, theta_obs, ang_vel, omega_obs};
   matlab_send(datos);
 
   // Serial.print(ref);
   // Serial.print(", ");
-  // Serial.print(pos);
+  // Serial.println(q); 
   // Serial.print(", ");
-  // Serial.print(ang);
-  // Serial.println();
+  // Serial.println(omega_obs);
 }
 
 /// Toma valores entre -90 y 90 grados.

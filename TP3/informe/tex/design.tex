@@ -224,14 +224,62 @@ donde
 
 Los polos elegidos para el control fueron los siguientes
 \begin{align*}
-	p_1^{(C,c)} =  &&
-	p_2^{(C,c)} =  &&
-	p_3^{(C,c)} =  &&
-	p_4^{(C,c)} = .
+	p_1^{(C,c)} = -7 &&
+	p_2^{(C,c)} = -2.7 &&
+	p_3^{(C,c)} = -8 &&
+    p_4^{(C,c)} = -2.7 &&
+    p_5^{(C,c)} = -3.
 \end{align*}
-En discreto, se corresponden con...
+En discreto, se corresponden con
+\begin{align*}
+   p_1^{(C,d)} = 0.8694 &&
+   p_2^{(C,d)} = 0.9474 &&
+   p_3^{(C,d)} = 0.8521 &&
+   p_4^{(C,d)} = 0.9474 &&
+   p_5^{(C,d)} = 0.9418.
+\end{align*}
 
+La matriz de realimentación $K$, calculada por \emph{pole-placement}, resultó en
+\begin{align*}
+    K = \begin{bmatrix}
+        0.20602 &  -0.019697 &  -168.14 & -57.641
+    \end{bmatrix}.
+\end{align*}
+El coeficiente asociado al control integral resultó en $H = 120.73$.
 
+\subsubitem{Verificación}
 
+Para la verificación del funcionamiento del controlador con acción integral, se introdujo una sucesión de referencias tipo escalón, y se midieron las variables de estado observadas. El resultado fue comparado con una simulación.
+
+\begin{figure}[!htbp]
+	\centering
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{int-theta.eps}
+		\caption{Ángulo de la barra.}
+		\label{fig:int-theta-new}
+	\end{subfigure}
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{int-pos.eps}
+		\caption{Posición del carrito.}
+		\label{fig:int-pos-new}
+	\end{subfigure}
+	
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{int-omega.eps}
+		\caption{Velocidad angular de la barra.}
+		\label{fig:int-omega-new}
+	\end{subfigure}
+	\begin{subfigure}{0.49\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{int-vel.eps}
+		\caption{Velocidad del carrito.}
+		\label{fig:int-vel}
+	\end{subfigure}
+	\caption{Estados medidos y estimados por el observador, para el controlador con acción integral.}
+	\label{fig:int-vars}
+\end{figure}
 
 % vim: ts=4 sts=4 sw=4 et lbr
