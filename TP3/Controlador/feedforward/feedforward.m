@@ -55,10 +55,11 @@ print -depsc ../../informe/img/ff-theta.eps
 
 figure; stairs(t, y(:, 2), '-.'); hold on;
 stairs(t, pos);
+stairs(t, ref, '--');
 xlabel('Tiempo [s]');
 ylabel('Posición [m]');
 xlim([0 t_max]);
-legend('Posición simulada', 'Posición observada');
+legend('Posición simulada', 'Posición observada', 'Referencia');
 grid;
 print -depsc ../../informe/img/ff-pos.eps
 

@@ -131,9 +131,14 @@ void loop() {
   const float C[2][4] = {{1.0, 0.0, 0.0, 0.0}, 
                   {0.0, 0.0, 1.0, 0.0}};
 
-  // ruidoso
-  const float L[4][2] = {{.6371, 0.0}, {-3.4543, 0.0}, {0.0, 1.0301}, {-0.003, 11.1285}};
+  const float L[4][2] = {    { 0.0003   , 0.0002},
+   {-0.4655  , -0.0020},
+    {0.0001  ,  0.3918},
+   {-0.0019  ,  1.5908}
+  };
   const float K[4] = {0.2533,   -0.0121, -116.5175,  -30};
+  const float FF = -116.5175;
+
 
 
   // A*[th om pos vel] -K*x + B*u + L*[th-th_o pos-pos_o]
@@ -148,8 +153,8 @@ void loop() {
   pos_obs = pos_obs1;
   vel_obs = vel_obs1;
 
-  u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs;
-
+  // Feedforward
+  u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs + FF * ref;
   moveServo(u);
 
   float datos[] = {ref, pos, pos_obs, vel, vel_obs, ang, theta_obs, ang_vel, omega_obs};

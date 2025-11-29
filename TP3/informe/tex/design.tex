@@ -44,7 +44,9 @@ La matriz de realimentación $K$ fue calculada por \emph{pole placement}. El res
 
 \subsubsection{Verificación}
 
-Para la verificación del correcto funcionamiento del controlador, se simuló la respuesta a condiciones iniciales no nulas en la posición del carrito, midiendo todas las variables de estado del sistema. El resultado se comparó con la respuesta simulada, y se muestra en la Figura~\ref{fig:noff-vars}.
+Para la verificación del correcto funcionamiento del controlador, se simuló la respuesta a condiciones iniciales no nulas en la posición del carrito, midiendo todas las variables de estado del sistema\footnotemark{}. El resultado se comparó con la respuesta simulada, y se muestra en la Figura~\ref{fig:noff-vars}.
+
+\footnotetext{Se decidió no realizar un experimento de perturbación tipo impulso golpeando el carrito dado que se dificultó la simulación correcta del mismo para realizar la comparación. Se considera que la respuesta a condiciones iniciales sigue representando correctamente la respuesta natural del lazo cerrado, con una dificultad menor.}
 
 La Figura~\ref{fig:noff-theta} muestra el ángulo de la barra que se obtiene por simulación y que se estima utilizando el observador, para una condición inicial de posición de \qty{0.15}{\m} (y el resto de las variables inicialmente nulas). Vemos que el comportamiento simulado y observado son similares inicalmente, aunque hay un desfasaje de ángulo en estado estacionario que se debe al intento del controlador de reducir el error en estado estacionario.
 
@@ -155,17 +157,11 @@ Las referencias a seguir serán simultáneamente de ángulo $\theta$ y posición
 \begin{equation*}
     F = \begin{bmatrix}0 & 116.5175 \end{bmatrix}.
 \end{equation*}
-Notar que la última inversa a calcular en \eqref{eq:feedforward} es en realidad una pseudoinversa de una matriz rectangular, por lo que el controlador no será capaz de controlar en función de ambas referencias en forma simultánea.
+Notar que la última inversa a calcular en \eqref{eq:feedforward} es en realidad una pseudoinversa de una matriz rectangular, por lo que el controlador no será capaz de controlar en función de ambas referencias en forma simultánea. Esto es esperable, ya que no hay manera de mover el carrito para lograr establecer la referencia de posición sin realizar ningún movimiento de la barra.
 
 \subsubsection{Verificación}
 
 Para verificar el correcto funcionamiento del controlador, se simularon referencias tipo escalón de posición, con $\theta_{\mathrm{ref}}=0$. Se midieron las respuestas temporales de todas las variables de estado utilizando el observador, y se compararon con simulaciones, como se observa en la Figura~\ref{fig:ff-vars}.
-
-La posición del carrito se observa en la Figura~\ref{fig:ff-pos}. Vemos que debido a la fricción, la posición real del carrito presenta un error en estado estacionario bastante grande, en particular para el segundo escalón de referencia. Sin embargo, el comportamiento cualitativo del sistema real es similar al simulado, y se observa un seguimiento a las referencias.
-
-La Figura~\ref{fig:ff-theta} muestra el ángulo de la barra. Vemos que no se mantiene en cero grados como la referencia impuesta, debido a que no pueden seguirse ambas referencias simultáneamente. El comportamiento cualitativo es similar entre simulación y realidad.
-
-Las Figuras~\ref{fig:ff-omega} y~\ref{fig:ff-vel} muestran las velocidades angular y del carrito, simuladas y estimadas. Vemos que hay una buena concordancia entre simulación y realidad.
 
 \begin{figure}[!htbp]
     \centering
@@ -197,6 +193,12 @@ Las Figuras~\ref{fig:ff-omega} y~\ref{fig:ff-vel} muestran las velocidades angul
     \caption{Estados simulados y estimados por el observador para la realimentación de estados con \emph{feed-forward}.}
     \label{fig:ff-vars}
 \end{figure}
+
+La posición del carrito se observa en la Figura~\ref{fig:ff-pos}. Vemos que debido a la fricción, la posición real del carrito presenta un error en estado estacionario bastante grande, en particular para el segundo escalón de referencia. Sin embargo, el comportamiento cualitativo del sistema real es similar al simulado, y se observa un seguimiento a las referencias.
+
+La Figura~\ref{fig:ff-theta} muestra el ángulo de la barra. Vemos que no se mantiene en cero grados como la referencia impuesta, debido a que no pueden seguirse ambas referencias simultáneamente. El comportamiento cualitativo es similar entre simulación y realidad.
+
+Las Figuras~\ref{fig:ff-omega} y~\ref{fig:ff-vel} muestran las velocidades angular y del carrito, simuladas y estimadas. Vemos que hay una buena concordancia entre simulación y realidad.
 
 \subsection{Acción integral}
 
@@ -247,9 +249,9 @@ La matriz de realimentación $K$, calculada por \emph{pole-placement}, resultó 
 \end{align*}
 El coeficiente asociado al control integral resultó en $H = 120.73$.
 
-\subsubitem{Verificación}
+\subsubsection{Verificación}
 
-Para la verificación del funcionamiento del controlador con acción integral, se introdujo una sucesión de referencias tipo escalón, y se midieron las variables de estado observadas. El resultado fue comparado con una simulación.
+Para la verificación del funcionamiento del controlador con acción integral, se introdujo una sucesión de referencias tipo escalón, y se midieron las variables de estado observadas. El resultado fue comparado con una simulación, y los resultados se muestran en la Figura~\ref{fig:int-vars}.
 
 \begin{figure}[!htbp]
 	\centering
@@ -257,20 +259,20 @@ Para la verificación del funcionamiento del controlador con acción integral, s
 		\centering
 		\includegraphics[width=\linewidth]{int-theta.eps}
 		\caption{Ángulo de la barra.}
-		\label{fig:int-theta-new}
+		\label{fig:int-theta}
 	\end{subfigure}
 	\begin{subfigure}{0.49\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{int-pos.eps}
 		\caption{Posición del carrito.}
-		\label{fig:int-pos-new}
+		\label{fig:int-pos}
 	\end{subfigure}
 	
 	\begin{subfigure}{0.49\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{int-omega.eps}
 		\caption{Velocidad angular de la barra.}
-		\label{fig:int-omega-new}
+		\label{fig:int-omega}
 	\end{subfigure}
 	\begin{subfigure}{0.49\linewidth}
 		\centering
@@ -281,5 +283,17 @@ Para la verificación del funcionamiento del controlador con acción integral, s
 	\caption{Estados medidos y estimados por el observador, para el controlador con acción integral.}
 	\label{fig:int-vars}
 \end{figure}
+
+La posición del carrito simulada y estimada por el observador se muestra en la Figura~\ref{fig:int-pos}. Se observa que se tiene un tiempo de establecimiento del orden de los \qty{2}{\s}, menor a los \qty{2.5}{\s} máximos especificados. En cuanto al sobrepico, no se alcanza el objetivo del \qty{15}{\percent} en teoría, pero la fricción no modelada logra detener el carro, haciendo que no haya sobrepico alguno y sí se cumpla con el requerimiento en la planta real.
+
+Debido al efecto de la fricción, se observa cierto error en estado estacionario, el cual no es excesivamente grande. Además, la presencia de acción integral permite continuar aumentando la acción de control con el objetivo de reducir dicho error.
+
+La Figura~\ref{fig:int-theta} muestra el ángulo simulado y estimado por el observador. Hay una buena concordancia entre simulación y realidad. La misma figura muestra además la acción de control enviada al servomotor. Debido a la presencia de acción integral, siempre está presente el riesgo de saturar el actuador. Sin embargo, se verifica que para estos experimentos la acción de control no supera los \qty{15}{\degree} en valor aboluto, lo que deja un margen muy amplio respecto de los límites impuestos de \qty{30}{\degree}.
+
+La velocidad angular simulada y estimada por el observador se muestra en la Figura~\ref{fig:int-omega}. Vemos que la observación de la velocidad angular se ve muy afectada por el ruido, al menos en una proporción mayor que durante lops experimentos sin acción integral que utilizaban el mismo observador.
+
+La velocidad del carrito, cuya simulación y estimación se muestran en la Figura~\ref{fig:int-vel}, muestran un nivel de ruido inferior al de la velocidad angular, y un relativamente buen seguimiento.
+
+La razón del aumento en el ruido parece deberse a los mayores valores de ganancia utilizados en la realimentación, especialmente las entradas 3 y 4 de la matriz $K$, las cuales son entre un \qty{40}{\percent} y el doble de grandes que las usadas para los primeros controladores. Esto produce acciones de control más agresivas, lo que introduce cierto ruido. Además, ese ruido se traduce en errores de medición, lo que afecta la acción de control en un círculo vicioso. Aún así, como el comportamiento del controlador es satisfactorio en términos del tiempo de establecimiento, y no presenta \emph{overshoot}, se decidió tolerar estos efectos.
 
 % vim: ts=4 sts=4 sw=4 et lbr

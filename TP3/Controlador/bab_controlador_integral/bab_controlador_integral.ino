@@ -175,7 +175,7 @@ void loop() {
   u = -K[0]*theta_obs - K[1]*omega_obs - K[2]*pos_obs - K[3]*vel_obs - H*q;
   moveServo(u);
 
-  float datos[] = {ref, pos, pos_obs, vel, vel_obs, ang, theta_obs, ang_vel, omega_obs};
+  float datos[] = {ref, u, pos_obs, vel, vel_obs, ang, theta_obs, ang_vel, omega_obs};
   matlab_send(datos);
 
   // Serial.print(ref);

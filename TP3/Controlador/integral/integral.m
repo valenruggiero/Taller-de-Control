@@ -44,12 +44,14 @@ Cint = H*Ts*z/(z-1);
 Tint = feedback(series(Cint, Tcl), 1, 1, 2)
 Tint = ss(Tint.A, Tint.B, [Tint.C; 0 1 0 0 0 0 0 0 0; 0 0 0 1 0 0 0 0 0], [Tint.D; zeros(2, 1)], Ts)
 
-data = dlmread('output20251127-193127.csv');
+##data = dlmread('output20251127-193127.csv');
+data = dlmread('output20251129-143703.csv');
 
 start = 1
 
 ref = data(start:end, 1);
-pos = data(start:end, 2);
+cont = data(start:end, 2);
+pos = data(start:end, 3);
 vel = data(start:end, 5);
 theta = data(start:end, 7);
 omega = data(start:end, 9);
@@ -62,19 +64,21 @@ figure; stairs(t, ref);
 
 figure; stairs(t, y(:, 1), '-.'); hold on;
 stairs(t, theta);
+stairs(t, cont, '--');
 xlabel('Tiempo [s]');
 ylabel('Ángulo [⁰]');
 xlim([0 t_max]);
-legend('Ángulo simulado', 'Ángulo observado');
+legend('Ángulo simulado', 'Ángulo observado', 'Acción de control');
 grid;
 print -depsc ../../informe/img/int-theta.eps
 
 figure; stairs(t, y(:, 2), '-.'); hold on;
 stairs(t, pos);
+stairs(t, ref, '--');
 xlabel('Tiempo [s]');
 ylabel('Posición [m]');
 xlim([0 t_max]);
-legend('Posición simulada', 'Posición observada');
+legend('Posición simulada', 'Posición observada', 'Referencia');
 grid;
 print -depsc ../../informe/img/int-pos.eps
 
